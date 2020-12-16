@@ -5,7 +5,8 @@ slots:
   # You can use "ping=<number>" e.g "ping=10" to set the ping
   # Use "skin=<skin>" e.g "skin=Toppe5" to set the skin (currently not really working)
   default:
-    - 'Test'
+    - 'Test skin=Toppe5'
+    - 'Test2 skin=steve'
   in_match:
     - 'In match'
     - '%strikepractice_opponent%'

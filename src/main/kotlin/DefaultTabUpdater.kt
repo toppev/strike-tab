@@ -17,8 +17,9 @@ val SP_DEFAULT_SKIN: Skin = Skins.DEFAULT_SKIN
 class DefaultTabUpdater : TabUpdater, Listener {
 
     private lateinit var tabbed: Tabbed
-    private val tabs = ConcurrentHashMap<Player, TabData>()
     private lateinit var plugin: StrikeTab
+    private val tabs = ConcurrentHashMap<Player, TabData>()
+    private val failedSkinLoad = false
 
     override fun onEnable(plugin: StrikeTab) {
         this.plugin = plugin
@@ -27,23 +28,34 @@ class DefaultTabUpdater : TabUpdater, Listener {
 
 
     override fun updateTab(player: Player, tabLayout: TabManager.TabLayout) {
-        val tabdata = tabs[player]
-        if (tabdata?.tablist != null) {
-            val tab = tabdata.tablist
-            // Only update if it needs update (i.e. old layout is different than the new one)
-            // Reduces per player tab update from ~25-50 ms to ~1-3 ms on my **** test server
-            if (tabLayout != tabdata.previousLayout) {
+        val tabData = tabs[player]
+        if (tabData?.tablist != null) {
+            val tab = tabData.tablist
+            // Only update if the old layout is different than the new one
+            // Reduces the tab update from ~25-50 ms to ~1-3 ms (per player) on my **** test server
+            if (tabLayout != tabData.previousLayout) {
                 tabLayout.slots.forEachIndexed { index, slot ->
-                    val skin = if (slot.skin != null) Skins.getPlayer(slot.skin) else SP_DEFAULT_SKIN
-                    tab.set(index, TextTabItem(slot.text, slot.ping, skin))
+                    tab.set(index, TextTabItem(slot.text, slot.ping, getSkin(slot.skin)))
                 }
                 tab.batchUpdate()
+                tabData.previousLayout = tabLayout
                 if (DEBUG) {
                     Bukkit.getLogger().info("(Batch)updated $player's tablist with ${tabLayout.slots.size} slots.")
                 }
             }
-            tabdata.previousLayout = tabLayout
         }
+    }
+
+    private fun getSkin(name: String?): Skin {
+        if (!failedSkinLoad && name != null) {
+            try {
+                Skins.getPlayer(name)
+            } catch (e: Exception) {
+                Bukkit.getLogger().info("Failed to load skin '${name}'. This error will not be logged anymore.")
+                e.printStackTrace()
+            }
+        }
+        return SP_DEFAULT_SKIN
     }
 
     override fun onJoin(player: Player) {

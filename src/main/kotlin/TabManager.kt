@@ -104,7 +104,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
             fun fromString(str: String): TabSlot {
                 // A stupid way to make skin & ping configurable
-                val skin = str.substringAfter("skin=", "").substringBefore(" ", "")
+                val skin = str.substringAfter("skin=", "").substringBefore(" ")
                 val ping = str.substringAfter("ping=").substringBefore(" ")
                 val text = str.replace("skin=$skin", "").replace("ping=$ping", "")
                 return TabSlot(
@@ -120,11 +120,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        val st = if (DEBUG) System.currentTimeMillis() else 0
         updater.onJoin(event.player)
-        if (DEBUG) {
-            Bukkit.getLogger().info("Initializing tablist took ${System.currentTimeMillis() - st} ms.")
-        }
     }
 
     @EventHandler
