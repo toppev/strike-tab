@@ -1,0 +1,14 @@
+tablist:
+  update-ticks: 100
+
+slots:
+  # You can use "ping=<number>" e.g "ping=10" to set the ping
+  # Use "skin=<skin>" e.g "skin=Toppe5" to set the skin (currently not really working)
+  default:
+    - 'Test'
+  in_match:
+    - 'In match'
+    - '%strikepractice_opponent%'
+    - '%strikepractice_opponent2% ping=200'
+  in_event:
+    - 'In event'
