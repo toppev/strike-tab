@@ -46,7 +46,7 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         args: Array<out String>
     ): Boolean {
         val admin = sender.hasPermission("striketab.admin")
-        if (args.isNotEmpty()) {
+        if (admin && args.isNotEmpty()) {
             if (arrayOf("reload", "rl").contains(args[0].toLowerCase())) {
                 reloadPluginConfig()
                 sender.sendMessage("${ChatColor.GREEN} Config reloaded!")
