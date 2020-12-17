@@ -7,9 +7,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import java.util.*
-
-const val TAB_SIZE = 80
 
 class TabManager(private val plugin: StrikeTab) : Listener {
 
@@ -17,23 +16,42 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
     private val updater: TabUpdater = DefaultTabUpdater()
     private val placeholders = Placeholders()
+    private val columns = plugin.config.getInt("tablist.columns")
+    private val columnSize = when (columns) {
+        3 -> 15
+        4 -> 20
+        else -> 20 // idk, someone can correct this
+    }
 
     init {
         updater.onEnable(plugin)
-        Bukkit.getLogger().info("Using ${updater.javaClass.name} for tablist")
+        Bukkit.getLogger().info("Using ${updater.javaClass.name} for tablist with $columns columns of size $columnSize")
         Bukkit.getPluginManager().registerEvents(this, plugin)
     }
 
     fun loadLayouts() {
+        val header = plugin.config.getString("header").translateColors()
+        val footer = plugin.config.getString("footer").translateColors()
         TabLayoutType.values().forEach { type ->
             try {
                 Bukkit.getLogger().info("Loading tablist layout for $type")
-                val slots = plugin.config.getStringList("slots.${type.toString().toLowerCase()}").toMutableList()
-                if (slots.size < TAB_SIZE) {
-                    Bukkit.getLogger().info("Layout is missing ${TAB_SIZE - slots.size} slots. Adding empty slots")
-                    for (i in slots.size until TAB_SIZE) slots.add("")
+                val slots = mutableListOf<String>()
+                for (column in 1..columns) {
+                    val path = "slots.${type.toString().toLowerCase()}.column-$column"
+                    val temp = plugin.config.getStringList(path).toMutableList()
+                    val missing = columnSize - temp.size
+                    if (missing > 0) {
+                        Bukkit.getLogger().info("Layout at $path is missing $missing slots. Players may be appended.")
+                        for (i in 0 until missing) temp.add("") // "" means it can be replaced with a player
+                    }
+                    if (temp.size > columnSize) {
+                        temp.subList(0, columnSize)
+                        Bukkit.getLogger()
+                            .warning("Tablist at $path has too many slots! ${temp.size} > $columnSize")
+                    }
+                    slots += temp
                 }
-                val layout = TabLayout.parse(slots)
+                val layout = TabLayout.parse(slots.map { it.translateColors() }, header, footer)
                 layouts[type] = layout
                 Bukkit.getLogger().info("$type tablist loaded")
                 if (DEBUG) {
@@ -51,35 +69,49 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         val api = StrikePractice.getAPI()
         return when {
             api.isInFight(player) -> TabLayoutType.IN_MATCH
-            api.isInEvent(player) -> TabLayoutType.IN_EVENT
+            // Add more here
             else -> TabLayoutType.DEFAULT
-        }.also {
-            if (DEBUG) {
-                Bukkit.getLogger().info("LayoutType for ${player.name}: $it")
-            }
         }
 
     }
 
-    fun setTablist(player: Player, layoutType: TabLayoutType = getLayout(player)) {
+    fun updateTablist(player: Player, layoutType: TabLayoutType = getLayout(player), bypassTimeLimit: Boolean = false) {
         val layout = layouts[layoutType]!!
         val st: Long = if (DEBUG) System.currentTimeMillis() else 0
+        var playerIndex = 0
         val personalSlots = layout.slots.map { slot ->
-            slot.copy(
-                text = placeholders.handlePlaceHolders(player, slot.text),
-                skin = if (slot.skin == null) null else placeholders.handlePlaceHolders(player, slot.skin)
+            val text = placeholders.handlePlaceHolders(player, slot.text)
+            // Replace "" with a real player
+            if (text == "") {
+                val realPlayer = getNextPlayer(++playerIndex)
+                if (realPlayer != null) {
+                    return@map slot.copy(
+                        text = realPlayer.playerListName,
+                        skin = realPlayer.name,
+                        ping = getPing(player),
+                    )
+                }
+            }
+            return@map slot.copy(
+                text = text,
+                skin = if (slot.skin == null) null else placeholders.handlePlaceHolders(player, slot.skin),
             )
         }
-        val personalLayout = layout.copy(slots = personalSlots)
+        val personalLayout = layout.copy(
+            slots = personalSlots,
+            header = placeholders.handlePlaceHolders(player, layout.header),
+            footer = placeholders.handlePlaceHolders(player, layout.footer),
+        )
         if (DEBUG) {
             val diff = System.currentTimeMillis() - st
-            if (diff > 10) {
+            if (diff > 20) {
                 Bukkit.getLogger().info("Placeholders etc for ${player.name} took longer than expected $diff ms.")
             }
         }
         updater.updateTab(
             player,
-            personalLayout
+            personalLayout,
+            bypassTimeLimit
         )
     }
 
@@ -87,18 +119,26 @@ class TabManager(private val plugin: StrikeTab) : Listener {
     enum class TabLayoutType {
         DEFAULT,
         IN_MATCH,
-        IN_EVENT
     }
 
-    data class TabLayout(val slots: List<TabSlot>) {
+    data class TabLayout(
+        val slots: List<TabSlot>,
+        val header: String,
+        val footer: String,
+    ) {
 
         companion object {
-            fun parse(rawLines: List<String>) = TabLayout(rawLines.map { TabSlot.fromString(it) })
+            fun parse(rawLines: List<String>, header: String, footer: String) =
+                TabLayout(rawLines.map { TabSlot.fromString(it) }, header, footer)
         }
 
     }
 
-    data class TabSlot(val text: String, val skin: String?, val ping: Int = 0) {
+    data class TabSlot(
+        val text: String,
+        val skin: String?,
+        val ping: Int = 0
+    ) {
 
         companion object {
 
@@ -121,11 +161,28 @@ class TabManager(private val plugin: StrikeTab) : Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         updater.onJoin(event.player)
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
+            updateTablist(event.player)
+        }, 4)
     }
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
         updater.onLeave(event.player)
+    }
+
+    // Update the tablist when the player teleports to a different world or more than 50 blocks.
+    @EventHandler
+    fun onTeleport(event: PlayerTeleportEvent) {
+        if (event.from.world !== event.to.world || event.from.distanceSquared(event.to) > 50 * 50) {
+            val player = event.player
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
+                if (DEBUG) {
+                    Bukkit.getLogger().info("Updating (teleport) ${player.name} tablist (type: ${getLayout(player)}")
+                }
+                updateTablist(player, bypassTimeLimit = true)
+            }, 4)
+        }
     }
 
 }

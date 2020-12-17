@@ -1,5 +1,6 @@
 package ga.strikepractice.striketab
 
+import com.keenant.tabbed.item.PlayerTabItem
 import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -19,9 +20,10 @@ class Placeholders() {
     }
 
     fun handlePlaceHolders(p: Player?, text: String?): String {
-        if (!enabled || text == null) return ""
+        // "" (not " ") is replaced with a player
+        if (!enabled || text == null) return " "
         val str = PlaceholderAPI.setPlaceholders(p, text)
-        if (str == "[display=false]" || str == "[display=!true]") return ""
+        if (str.contains("[display=false]") || str.contains("[display=!true]")) return " "
         return str
     }
 }

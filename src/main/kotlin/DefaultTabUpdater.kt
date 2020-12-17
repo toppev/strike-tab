@@ -1,6 +1,7 @@
 package ga.strikepractice.striketab
 
 import com.keenant.tabbed.Tabbed
+import com.keenant.tabbed.item.PlayerTabItem
 import com.keenant.tabbed.item.TextTabItem
 import com.keenant.tabbed.tablist.TableTabList
 import com.keenant.tabbed.util.Skin
@@ -8,7 +9,6 @@ import com.keenant.tabbed.util.Skins
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -27,29 +27,39 @@ class DefaultTabUpdater : TabUpdater, Listener {
     }
 
 
-    override fun updateTab(player: Player, tabLayout: TabManager.TabLayout) {
+    override fun updateTab(player: Player, layout: TabManager.TabLayout, bypassTimeLimit: Boolean) {
         val tabData = tabs[player]
-        if (tabData?.tablist != null) {
+        // comparing to previous layout is a very good performance improvement
+        if (tabData?.tablist == null || tabData.previousLayout == layout) return
+        if (bypassTimeLimit || tabData.lastUpdated + 500 < System.currentTimeMillis()) {
             val tab = tabData.tablist
-            // Only update if the old layout is different than the new one
-            // Reduces the tab update from ~25-50 ms to ~1-3 ms (per player) on my **** test server
-            if (tabLayout != tabData.previousLayout) {
-                tabLayout.slots.forEachIndexed { index, slot ->
-                    tab.set(index, TextTabItem(slot.text, slot.ping, getSkin(slot.skin)))
-                }
-                tab.batchUpdate()
-                tabData.previousLayout = tabLayout
-                if (DEBUG) {
-                    Bukkit.getLogger().info("(Batch)updated $player's tablist with ${tabLayout.slots.size} slots.")
-                }
+            layout.slots.forEachIndexed { index, slot ->
+                tab.set(index, TextTabItem(slot.text, slot.ping, getSkin(slot.skin)))
+            }
+            val asd: PlayerTabItem
+            if (tab.footer != layout.footer) tab.footer = layout.footer
+            if (tab.header != layout.header) tab.header = layout.header
+            tab.batchUpdate()
+            tabData.previousLayout = layout
+            tabData.lastUpdated = System.currentTimeMillis()
+            if (DEBUG) {
+                Bukkit.getLogger().info("(Batch)updated ${player.name}'s tab slots.")
             }
         }
     }
 
     private fun getSkin(name: String?): Skin {
-        if (!failedSkinLoad && name != null) {
+        if (!failedSkinLoad && !name.isNullOrBlank()) {
             try {
-                Skins.getPlayer(name)
+                val op = Bukkit.getPlayerExact(name)
+                if (op != null) {
+                    return Skins.getPlayer(op)
+                }
+                @Suppress("DEPRECATION")
+                val of = Bukkit.getOfflinePlayer(name)
+                if (of.hasPlayedBefore()) {
+                    return Skins.getPlayer(of.uniqueId)
+                }
             } catch (e: Exception) {
                 Bukkit.getLogger().info("Failed to load skin '${name}'. This error will not be logged anymore.")
                 e.printStackTrace()
@@ -59,16 +69,14 @@ class DefaultTabUpdater : TabUpdater, Listener {
     }
 
     override fun onJoin(player: Player) {
-        object : BukkitRunnable() {
-            override fun run() {
-                val tab = tabbed.newTableTabList(player)
-                tabs[player] = TabData(tab)
-                tab.isBatchEnabled = true
-                if (DEBUG) {
-                    Bukkit.getLogger().info("Created tablist for ${player.name} (total ${tabs.size} tablists)")
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin) {
+            val tab = tabbed.newTableTabList(player, plugin.config.getInt("tablist.columns"))
+            tabs[player] = TabData(tab)
+            tab.isBatchEnabled = true
+            if (DEBUG) {
+                Bukkit.getLogger().info("Created tablist for ${player.name} (total ${tabs.size} tablists)")
             }
-        }.runTaskAsynchronously(plugin)
+        }
     }
 
     override fun onLeave(player: Player) {
@@ -81,7 +89,8 @@ class DefaultTabUpdater : TabUpdater, Listener {
 
     class TabData(
         val tablist: TableTabList,
-        var previousLayout: TabManager.TabLayout? = null
+        var previousLayout: TabManager.TabLayout? = null,
+        var lastUpdated: Long = 0
     )
 
 }
