@@ -14,6 +14,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
     private val layouts = EnumMap<TabLayoutType, TabLayout>(TabLayoutType::class.java)
 
+    private val ranksManager = RanksManager(plugin)
     private val updater: TabUpdater = DefaultTabUpdater()
     private val placeholders = Placeholders()
     private val columns = plugin.config.getInt("tablist.columns")
@@ -83,7 +84,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
             val text = placeholders.handlePlaceHolders(player, slot.text)
             // Replace "" with a real player
             if (text == "") {
-                val realPlayer = getNextPlayer(++playerIndex)
+                val realPlayer = ranksManager.getNextPlayer(playerIndex++)
                 if (realPlayer != null) {
                     return@map slot.copy(
                         text = realPlayer.playerListName,
@@ -104,7 +105,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         )
         if (DEBUG) {
             val diff = System.currentTimeMillis() - st
-            if (diff > 20) {
+            if (diff > 30) {
                 Bukkit.getLogger().info("Placeholders etc for ${player.name} took longer than expected $diff ms.")
             }
         }

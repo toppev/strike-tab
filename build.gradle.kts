@@ -23,6 +23,9 @@ repositories {
     maven {
         url = uri("http://repo.extendedclip.com/content/repositories/placeholderapi/")
     }
+    maven {
+        url = uri("http://repo.citizensnpcs.co/")
+    }
     flatDir {
         dirs("libs")
     }
@@ -37,6 +40,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnly("ga.strikepractice:strikepractice-api-1.1.0")
     compileOnly("me.clip:placeholderapi:2.10.4")
+    compileOnly("net.citizensnpcs:citizens:2.0.13-SNAPSHOT")
     implementation("com.github.thekeenant:tabbed:v1.8")
 }
 

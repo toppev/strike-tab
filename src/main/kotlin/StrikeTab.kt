@@ -7,6 +7,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.reflect.Field
 
@@ -19,16 +20,18 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
 
     override fun onEnable() {
         super.onEnable()
-        tabManager = TabManager(this)
         saveDefaultConfig()
         getCommand("striketab").executor = this
         initializePlugin()
     }
 
     private fun initializePlugin() {
-        initRanks(this)
-        tabManager.loadLayouts()
+        // When reloading the config
         Bukkit.getScheduler().cancelTasks(this)
+        HandlerList.unregisterAll(this)
+
+        tabManager = TabManager(this)
+        tabManager.loadLayouts()
         val ticks = config.getLong("tablist.update-ticks")
         TabUpdateTask(tabManager).runTaskTimerAsynchronously(this, ticks, ticks)
         Bukkit.getOnlinePlayers().forEach { player ->
