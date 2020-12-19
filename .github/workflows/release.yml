@@ -1,0 +1,30 @@
+on:
+  push:
+    tags:
+      - 'v*'
+name: Release Jar
+jobs:
+  build:
+    name: Build Jar
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8.x'
+      - name: "./gradlew build"
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: --scan --no-build-cache build
+        env:
+          CI: true
+        # No changes meanwhile building
+      - name: "git diff --exit-code"
+        run: git diff --exit-code
+        # Release the plugin jar file
+      - name: Create a Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/libs/*all.jar"
+          token: ${{ secrets.TOKEN }}
