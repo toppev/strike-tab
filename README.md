@@ -35,3 +35,8 @@ A: Tested on 1.8.8 (1.8.R3) server with 1.8.8 and newer MC clients. If it works 
 
 **Q: How to make the header/footer multiple lines?**  
 A: You can try `\n` to split the line but it didn't seem to work on 1.8 server/client.
+
+## Rules/EULA
+- You may **not sell or redistribute** this product or any fork of it.
+- You may modify the source code.
+ Message me if your developer wants access to the source code.
