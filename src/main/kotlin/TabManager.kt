@@ -1,6 +1,7 @@
 package ga.strikepractice.striketab
 
 import ga.strikepractice.StrikePractice
+import ga.strikepractice.striketab.util.Placeholders
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler

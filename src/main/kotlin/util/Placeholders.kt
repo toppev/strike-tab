@@ -1,6 +1,5 @@
-package ga.strikepractice.striketab
+package ga.strikepractice.striketab.util
 
-import com.keenant.tabbed.item.PlayerTabItem
 import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor

@@ -1,6 +1,7 @@
 # strike-tab
 Per player tablist addon for StrikePractice plugin. The plugin has separate tabs for lobby and fights.
 
+See below for FAQ section.
 
 ## Installing the plugin
 1. Download the latest version from [releases](https://github.com/toppev/strike-tab/releases)

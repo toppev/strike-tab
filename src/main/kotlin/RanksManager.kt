@@ -14,9 +14,9 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
     private val rankList: Map<String, String?>
 
     // Used to sort players in the tablist
-    private lateinit var TAB_PRIORITY_COMPARATOR: Comparator<Player>
+    private var tabPriorityComparator: Comparator<Player>
 
-    // Current sorted tablist
+    // Current sorted tablist. First player is the "greatest" (i.e has most permissions)
     private var orderedPlayerList = listOf<UUID>()
 
     init {
@@ -26,7 +26,8 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
                 ?.translateColors()
         }.toMap()
         Bukkit.getLogger().info("Loaded tab ranks (in order): $rankList")
-        TAB_PRIORITY_COMPARATOR = Comparator { a, b ->
+        // Greater if has more players (we reverse order the players)
+        tabPriorityComparator = Comparator { a, b ->
             for (perm in rankList.keys) {
                 val aHas = a.hasPermission(perm)
                 val bHas = b.hasPermission(perm)
@@ -60,7 +61,7 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
     }
 
     private fun refreshOrderedPlayerList() {
-        val temp = Bukkit.getOnlinePlayers().sortedWith(TAB_PRIORITY_COMPARATOR).map { it.uniqueId }
+        val temp = Bukkit.getOnlinePlayers().sortedWith(tabPriorityComparator.reversed()).map { it.uniqueId }
         if (DEBUG && temp != orderedPlayerList) {
             Bukkit.getLogger().info("Reordered tab: ${temp.map { Bukkit.getPlayer(it).name }}")
         }
