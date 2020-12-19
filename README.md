@@ -4,7 +4,7 @@ Per player tablist addon for StrikePractice plugin. The plugin has separate tabs
 See below for FAQ section.
 
 ## Installing the plugin
-1. Download the latest version from [releases](https://github.com/toppev/strike-tab/releases)
+1. Download the latest version from [releases](https://github.com/toppev/strike-tab/releases) (`Assets -> StrikeTab-x.y.z-SNAPSHOT-all.jar`)
 2. Drop the jar file in your `plugins/` directory.
 3. Install [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) and [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) plugins (required).
 4. Start the server and configure the `plugins/StrikeTab/config.yml`.
