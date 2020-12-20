@@ -5,11 +5,11 @@ See below for FAQ section.
 
 ## Installing the plugin
 1. Download the latest version from [releases](https://github.com/toppev/strike-tab/releases) (`Assets -> StrikeTab-x.y.z-SNAPSHOT-all.jar`)
-2. Drop the jar file in your `plugins/` directory.
-3. Install [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) and [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) plugins (required).
-4. Start the server and configure the `plugins/StrikeTab/config.yml`.
-5. Restart the server or reload the configuration with `/striketab reload`.
-
+2. Click "Watch" to be notified of new updates (optional).
+3. Drop the jar file in your `plugins/` directory.
+4. Install [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) and [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) plugins (required).
+5. Start the server and configure the `plugins/StrikeTab/config.yml`.
+6. Restart the server or reload the configuration with `/striketab reload`.
 
 ## Development
 
