@@ -1,6 +1,7 @@
 package ga.strikepractice.striketab
 
 import com.keenant.tabbed.util.Reflection
+import ga.strikepractice.striketab.updater.TabUpdateTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -86,14 +87,14 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
  */
 fun String.translateColors(): String = ChatColor.translateAlternateColorCodes('&', this)
 
-private var pingField: Field? = null
+private lateinit var pingField: Field
 fun getPing(player: Player): Int {
     try {
         val craftPlayer = Reflection.getHandle(player)
-        if (pingField == null) {
+        if (!::pingField.isInitialized) {
             pingField = craftPlayer.javaClass.getDeclaredField("ping")
         }
-        return pingField!!.getInt(craftPlayer)
+        return pingField.getInt(craftPlayer)
     } catch (e: Exception) {
         e.printStackTrace()
     }

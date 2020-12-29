@@ -1,5 +1,7 @@
-package ga.strikepractice.striketab
+package ga.strikepractice.striketab.updater
 
+import ga.strikepractice.striketab.DEBUG
+import ga.strikepractice.striketab.TabManager
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
 

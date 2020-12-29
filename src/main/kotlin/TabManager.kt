@@ -1,6 +1,7 @@
 package ga.strikepractice.striketab
 
-import ga.strikepractice.StrikePractice
+import ga.strikepractice.striketab.updater.DefaultTabUpdater
+import ga.strikepractice.striketab.updater.TabUpdater
 import ga.strikepractice.striketab.util.Placeholders
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -67,16 +68,6 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         }
     }
 
-    private fun getLayout(player: Player): TabLayoutType {
-        val api = StrikePractice.getAPI()
-        return when {
-            api.isInFight(player) -> TabLayoutType.IN_MATCH
-            // Add more here
-            else -> TabLayoutType.DEFAULT
-        }
-
-    }
-
     fun updateTablist(player: Player, layoutType: TabLayoutType = getLayout(player), bypassTimeLimit: Boolean = false) {
         val layout = layouts[layoutType]!!
         val st: Long = if (DEBUG) System.currentTimeMillis() else 0
@@ -115,49 +106,6 @@ class TabManager(private val plugin: StrikeTab) : Listener {
             personalLayout,
             bypassTimeLimit
         )
-    }
-
-
-    enum class TabLayoutType {
-        DEFAULT,
-        IN_MATCH,
-    }
-
-    data class TabLayout(
-        val slots: List<TabSlot>,
-        val header: String,
-        val footer: String,
-    ) {
-
-        companion object {
-            fun parse(rawLines: List<String>, header: String, footer: String) =
-                TabLayout(rawLines.map { TabSlot.fromString(it) }, header, footer)
-        }
-
-    }
-
-    data class TabSlot(
-        val text: String,
-        val skin: String?,
-        val ping: Int = 0
-    ) {
-
-        companion object {
-
-            fun fromString(str: String): TabSlot {
-                // A stupid way to make skin & ping configurable
-                val skin = str.substringAfter("skin=", "").substringBefore(" ")
-                val ping = str.substringAfter("ping=").substringBefore(" ")
-                val text = str.replace("skin=$skin", "").replace("ping=$ping", "")
-                return TabSlot(
-                    text,
-                    if (skin.isBlank()) null else skin,
-                    ping.toIntOrNull() ?: 5
-                )
-            }
-
-        }
-
     }
 
     @EventHandler

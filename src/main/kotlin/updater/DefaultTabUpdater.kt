@@ -1,10 +1,13 @@
-package ga.strikepractice.striketab
+package ga.strikepractice.striketab.updater
 
 import com.keenant.tabbed.Tabbed
 import com.keenant.tabbed.item.TextTabItem
 import com.keenant.tabbed.tablist.TableTabList
 import com.keenant.tabbed.util.Skin
 import com.keenant.tabbed.util.Skins
+import ga.strikepractice.striketab.DEBUG
+import ga.strikepractice.striketab.StrikeTab
+import ga.strikepractice.striketab.TabLayout
 import ga.strikepractice.striketab.util.getCitizensPlayer
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -28,7 +31,7 @@ class DefaultTabUpdater : TabUpdater, Listener {
     }
 
 
-    override fun updateTab(player: Player, layout: TabManager.TabLayout, bypassTimeLimit: Boolean) {
+    override fun updateTab(player: Player, layout: TabLayout, bypassTimeLimit: Boolean) {
         val tabData = tabs[player.uniqueId]
         // comparing to previous layout is a very good performance improvement
         if (tabData?.tablist == null || tabData.previousLayout == layout) return
@@ -60,7 +63,7 @@ class DefaultTabUpdater : TabUpdater, Listener {
                 if (of.hasPlayedBefore()) {
                     return Skins.getPlayer(of.uniqueId)
                 }
-                if(DEBUG) {
+                if (DEBUG) {
                     Bukkit.getLogger().info("No skin found for $name. Defaulting to default skin.")
                 }
             } catch (e: Exception) {
@@ -92,7 +95,7 @@ class DefaultTabUpdater : TabUpdater, Listener {
 
     class TabData(
         val tablist: TableTabList,
-        var previousLayout: TabManager.TabLayout? = null,
+        var previousLayout: TabLayout? = null,
         var lastUpdated: Long = 0
     )
 

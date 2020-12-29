@@ -54,7 +54,6 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
         Bukkit.getScheduler().runTaskLater(plugin, { refreshOrderedPlayerList() }, 1)
@@ -76,7 +75,7 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
             val uuid = tempList[playerIndex]
             return Bukkit.getPlayer(uuid)
         }
-        return null;
+        return null
     }
 
 }
