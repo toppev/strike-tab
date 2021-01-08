@@ -59,12 +59,7 @@ class DefaultTabUpdater : TabUpdater, Listener {
                 }
                 @Suppress("DEPRECATION")
                 val of = Bukkit.getOfflinePlayer(name)
-                if (of.hasPlayedBefore()) {
-                    return Skins.getPlayer(of.uniqueId)
-                }
-                if (DEBUG) {
-                    Bukkit.getLogger().info("No skin found for $name. Defaulting to default skin.")
-                }
+                return Skins.getPlayer(of.uniqueId)
             } catch (e: Exception) {
                 Bukkit.getLogger().info("Failed to load skin '${name}'. This error will not be logged anymore.")
                 e.printStackTrace()
