@@ -23,7 +23,6 @@ class DefaultTabUpdater : TabUpdater, Listener {
     private lateinit var tabbed: Tabbed
     private lateinit var plugin: StrikeTab
     private val tabs = ConcurrentHashMap<UUID, TabData>()
-    private val failedSkinLoad = false
 
     override fun onEnable(plugin: StrikeTab) {
         this.plugin = plugin
@@ -52,7 +51,7 @@ class DefaultTabUpdater : TabUpdater, Listener {
     }
 
     private fun getSkin(name: String?): Skin {
-        if (!failedSkinLoad && !name.isNullOrBlank()) {
+        if (!name.isNullOrBlank()) {
             try {
                 val op = Bukkit.getPlayerExact(name) ?: getCitizensPlayer(name)
                 if (op != null) {
