@@ -107,10 +107,10 @@ slots:
     column-2:
       - ' '
       - '&7Ping: &e%strikepractice_ping% ms ping=%strikepractice_ping%'
-      - '&7Opponent &ePing: %strikepractice_opponent_ping%'
+      - '&7Opponent &ePing: %strikepractice_opponent_ping% ms ping=%strikepractice_opponent_ping%'
       - '&6Kit: %strikepractice_kit%'
       - '&6Arena: %strikepractice_arena%'
-      - '&6Opponent Elo: %strikepractice_opponent_elo%'
+      - '&6Opponent Elo: %strikepractice_opponent_elo% [display=%strikepractice_ranked%]'
       - '&6Round: %strikepractice_round%/%strikepractice_total_rounds% [display=%strikepractice_is_bestof%]'
       - '&6Wins: &a%strikepractice_own_wins% - %strikepractice_opponent_colored_wins% [display=%strikepractice_is_bestof%]'
       - ' '
