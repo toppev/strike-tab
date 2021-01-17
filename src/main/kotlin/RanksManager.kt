@@ -7,6 +7,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.Comparator
 
 class RanksManager(private val plugin: StrikeTab) : Listener {
@@ -27,11 +28,12 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
         }.toMap()
         Bukkit.getLogger().info("Loaded tab ranks (in order): $rankList")
         // Greater if has more players (we reverse order the players)
+
         tabPriorityComparator = Comparator { a, b ->
             for (perm in rankList.keys) {
-                val aHas = a.hasPermission(perm)
-                val bHas = b.hasPermission(perm)
-                return@Comparator aHas.compareTo(bHas)
+                val res = a.hasPermission(perm).compareTo(b.hasPermission(perm))
+                if (res == 0) continue
+                return@Comparator res
             }
             return@Comparator 0
         }
@@ -60,11 +62,13 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
     }
 
     private fun refreshOrderedPlayerList() {
-        val temp = Bukkit.getOnlinePlayers().sortedWith(tabPriorityComparator.reversed()).map { it.uniqueId }
-        if (DEBUG && temp != orderedPlayerList) {
-            Bukkit.getLogger().info("Reordered tab: ${temp.map { Bukkit.getPlayer(it).name }}")
+        CompletableFuture.runAsync {
+            val temp = Bukkit.getOnlinePlayers().sortedWith(tabPriorityComparator.reversed()).map { it.uniqueId }
+            if (DEBUG && temp != orderedPlayerList) {
+                Bukkit.getLogger().info("Reordered tab: ${temp.map { Bukkit.getPlayer(it)?.name }}")
+            }
+            orderedPlayerList = temp
         }
-        orderedPlayerList = temp
     }
 
 
