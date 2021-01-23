@@ -1,7 +1,8 @@
 tablist:
   update-ticks: 100
   columns: 4
-# Comment out to remove the header/footer
+# Use '' to disable, for example:
+# header: ''
 header: '&b&lStrikeTab &7&l- &3&lTablist Addon'
 footer: '&7Contact Toppe#4670 for StrikeTab'
 # Used to sort players in tab

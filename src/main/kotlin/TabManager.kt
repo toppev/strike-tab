@@ -33,8 +33,14 @@ class TabManager(private val plugin: StrikeTab) : Listener {
     }
 
     fun loadLayouts() {
-        val header = plugin.config.get("header") as String?
-        val footer = plugin.config.get("footer") as String?
+        val header = plugin.config.getString("header").ifEmpty {
+            Bukkit.getLogger().info("StrikeTab header disabled")
+            null
+        }
+        val footer = plugin.config.getString("footer").ifEmpty {
+            Bukkit.getLogger().info("StrikeTab footer disabled")
+            null
+        }
         TabLayoutType.values().forEach { type ->
             try {
                 Bukkit.getLogger().info("Loading tablist layout for $type")
