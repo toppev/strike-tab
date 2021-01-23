@@ -41,7 +41,11 @@ dependencies {
     compileOnly("ga.strikepractice:strikepractice-api-1.1.0")
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("net.citizensnpcs:citizens:2.0.13-SNAPSHOT")
-    implementation("com.github.thekeenant:tabbed:v1.8")
+    implementation("com.github.toppev:tabbed:master-SNAPSHOT")
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 }
 
 tasks {
