@@ -2,7 +2,7 @@ main: ga.strikepractice.striketab.StrikeTab
 version: 0.1.4
 name: StrikeTab
 author: Toppe5
-depend: [PlaceholderAPI, ProtocolLib]
+depend: [StrikePractice, PlaceholderAPI, ProtocolLib]
 softdepend: [Citizens]
 commands:
   striketab:
