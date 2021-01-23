@@ -32,12 +32,19 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin)
     }
 
+    private fun parseListOrString(key: String): String {
+        return when (val obj = plugin.config.get(key)) {
+            is List<*> -> obj.joinToString(separator = "\n")
+            else -> obj.toString()
+        }
+    }
+
     fun loadLayouts() {
-        val header = plugin.config.getString("header").ifEmpty {
+        val header = parseListOrString("header").ifEmpty {
             Bukkit.getLogger().info("StrikeTab header disabled")
             null
         }
-        val footer = plugin.config.getString("footer").ifEmpty {
+        val footer = parseListOrString("footer").ifEmpty {
             Bukkit.getLogger().info("StrikeTab footer disabled")
             null
         }
