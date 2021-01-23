@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 val SP_DEFAULT_SKIN: Skin = Skins.DEFAULT_SKIN
 
-class DefaultTabUpdater : TabUpdater, Listener {
+class TabbedTabUpdater : TabUpdater, Listener {
 
     private lateinit var tabbed: Tabbed
     private lateinit var plugin: StrikeTab
@@ -39,8 +39,8 @@ class DefaultTabUpdater : TabUpdater, Listener {
             layout.slots.forEachIndexed { index, slot ->
                 tab.set(index, TextTabItem(slot.text, slot.ping, getSkin(slot.skin)))
             }
-            if (tab.footer != layout.footer) tab.footer = layout.footer
-            if (tab.header != layout.header) tab.header = layout.header
+            if (layout.footer != null && tab.footer != layout.footer) tab.footer = layout.footer
+            if (layout.header != null && tab.header != layout.header) tab.header = layout.header
             tab.batchUpdate()
             tabData.previousLayout = layout
             tabData.lastUpdated = System.currentTimeMillis()
@@ -61,7 +61,7 @@ class DefaultTabUpdater : TabUpdater, Listener {
                 val of = Bukkit.getOfflinePlayer(name)
                 return Skins.getPlayer(of.uniqueId)
             } catch (e: Exception) {
-                Bukkit.getLogger().info("Failed to load skin '${name}'. This error will not be logged anymore.")
+                Bukkit.getLogger().info("Failed to load skin '${name}'.")
                 e.printStackTrace()
             }
         }

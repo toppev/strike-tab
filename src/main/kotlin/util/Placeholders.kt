@@ -5,7 +5,7 @@ import org.bukkit.entity.Player
 
 class Placeholders {
 
-    fun handlePlaceHolders(p: Player?, text: String?): String {
+    fun handlePlaceHolders(p: Player?, text: String): String {
         val str = PlaceholderAPI.setPlaceholders(p, text)
         // "" (not " ") is replaced with a player
         if (str.contains("[display=false]") || str.contains("[display=!true]")) return " "

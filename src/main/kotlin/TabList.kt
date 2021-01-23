@@ -6,12 +6,12 @@ import org.bukkit.entity.Player
 
 data class TabLayout(
     val slots: List<TabSlot>,
-    val header: String,
-    val footer: String,
+    val header: String?,
+    val footer: String?,
 ) {
 
     companion object {
-        fun parse(rawLines: List<String>, header: String, footer: String) =
+        fun parse(rawLines: List<String>, header: String?, footer: String?) =
             TabLayout(rawLines.map { TabSlot.fromString(it) }, header, footer)
     }
 

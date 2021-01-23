@@ -1,7 +1,7 @@
 package ga.strikepractice.striketab
 
-import ga.strikepractice.striketab.updater.DefaultTabUpdater
 import ga.strikepractice.striketab.updater.TabUpdater
+import ga.strikepractice.striketab.updater.TabbedTabUpdater
 import ga.strikepractice.striketab.util.Placeholders
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -17,7 +17,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
     private val layouts = EnumMap<TabLayoutType, TabLayout>(TabLayoutType::class.java)
 
     private val ranksManager = RanksManager(plugin)
-    private val updater: TabUpdater = DefaultTabUpdater()
+    private val updater: TabUpdater = TabbedTabUpdater()
     private val placeholders = Placeholders()
     private val columns = plugin.config.getInt("tablist.columns")
     private val columnSize = when (columns) {
@@ -33,8 +33,8 @@ class TabManager(private val plugin: StrikeTab) : Listener {
     }
 
     fun loadLayouts() {
-        val header = plugin.config.getString("header").translateColors()
-        val footer = plugin.config.getString("footer").translateColors()
+        val header = plugin.config.get("header") as String?
+        val footer = plugin.config.get("footer") as String?
         TabLayoutType.values().forEach { type ->
             try {
                 Bukkit.getLogger().info("Loading tablist layout for $type")
@@ -54,7 +54,11 @@ class TabManager(private val plugin: StrikeTab) : Listener {
                     }
                     slots += temp
                 }
-                val layout = TabLayout.parse(slots.map { it.translateColors() }, header, footer)
+                val layout = TabLayout.parse(
+                    slots.map { it.translateColors() },
+                    header?.translateColors(),
+                    footer?.translateColors()
+                )
                 layouts[type] = layout
                 Bukkit.getLogger().info("$type tablist loaded")
                 if (DEBUG) {
@@ -92,8 +96,8 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         }
         val personalLayout = layout.copy(
             slots = personalSlots,
-            header = placeholders.handlePlaceHolders(player, layout.header),
-            footer = placeholders.handlePlaceHolders(player, layout.footer),
+            header = layout.header?.let { placeholders.handlePlaceHolders(player, it) },
+            footer = layout.footer?.let { placeholders.handlePlaceHolders(player, it) },
         )
         if (DEBUG) {
             val diff = System.currentTimeMillis() - st
