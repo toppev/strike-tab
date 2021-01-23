@@ -3,6 +3,7 @@ package ga.strikepractice.striketab
 import ga.strikepractice.striketab.updater.TabUpdater
 import ga.strikepractice.striketab.updater.TabbedTabUpdater
 import ga.strikepractice.striketab.util.Placeholders
+import ga.strikepractice.striketab.util.isSupportedClient
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -86,6 +87,10 @@ class TabManager(private val plugin: StrikeTab) : Listener {
     }
 
     fun updateTablist(player: Player, layoutType: TabLayoutType = getLayout(player), bypassTimeLimit: Boolean = false) {
+        if (!isSupportedClient(player)) {
+            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on supported client version")
+            return
+        }
         val layout = layouts[layoutType]!!
         val st: Long = if (DEBUG) System.currentTimeMillis() else 0
         var playerIndex = 0
