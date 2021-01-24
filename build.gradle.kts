@@ -32,6 +32,9 @@ repositories {
     maven {
         url = uri("https://jitpack.io")
     }
+    maven {
+        url = uri("https://repo.dmulloy2.net/nexus/repository/public/")
+    }
 }
 
 dependencies {
@@ -41,6 +44,7 @@ dependencies {
     compileOnly("ga.strikepractice:strikepractice-api-1.1.0")
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("net.citizensnpcs:citizens:2.0.13-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
     implementation("com.github.toppev:tabbed:master-SNAPSHOT")
 }
 
