@@ -31,6 +31,11 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         updater.onEnable(plugin)
         Bukkit.getLogger().info("Using ${updater.javaClass.name} for tablist with $columns columns of size $columnSize")
         Bukkit.getPluginManager().registerEvents(this, plugin)
+        loadLayouts()
+        Bukkit.getOnlinePlayers().forEach {
+            updater.onLeave(it)
+            updater.onJoin(it)
+        }
     }
 
     private fun parseListOrString(key: String): String {
@@ -40,7 +45,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         }
     }
 
-    fun loadLayouts() {
+    private fun loadLayouts() {
         val header = parseListOrString("header").ifEmpty {
             Bukkit.getLogger().info("StrikeTab header disabled")
             null
@@ -88,7 +93,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
     fun updateTablist(player: Player, layoutType: TabLayoutType = getLayout(player), bypassTimeLimit: Boolean = false) {
         if (!isSupportedClient(player)) {
-            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on supported client version")
+            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on supported client version (while updating)")
             return
         }
         val layout = layouts[layoutType]!!
@@ -132,15 +137,25 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        updater.onJoin(event.player)
+        val player = event.player
+        if (!isSupportedClient(player)) {
+            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on supported client version (on join)")
+            return
+        }
+        updater.onJoin(player)
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
-            updateTablist(event.player)
+            updateTablist(player)
         }, 4)
     }
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
-        updater.onLeave(event.player)
+        val player = event.player
+        if (!isSupportedClient(player)) {
+            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on supported client version (on quit)")
+            return
+        }
+        updater.onLeave(player)
     }
 
     // Update the tablist when the player teleports to a different world or more than 50 blocks.

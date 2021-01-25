@@ -32,12 +32,8 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         HandlerList.unregisterAll(this)
 
         tabManager = TabManager(this)
-        tabManager.loadLayouts()
         val ticks = config.getLong("tablist.update-ticks")
         TabUpdateTask(tabManager).runTaskTimerAsynchronously(this, ticks, ticks)
-        Bukkit.getOnlinePlayers().forEach { player ->
-            tabManager.updateTablist(player)
-        }
     }
 
 
