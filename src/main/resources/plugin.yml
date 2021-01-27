@@ -7,3 +7,8 @@ softdepend: [Citizens]
 commands:
   striketab:
     aliases: [spractab]
+
+permissions:
+  striketab.admin:
+    description: Admin permissions to /striketab commands, update notifications etc.
+    defaultf: false

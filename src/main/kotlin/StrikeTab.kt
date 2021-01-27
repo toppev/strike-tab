@@ -2,6 +2,7 @@ package ga.strikepractice.striketab
 
 import com.keenant.tabbed.util.Reflection
 import ga.strikepractice.striketab.updater.TabUpdateTask
+import ga.strikepractice.striketab.util.UpdateChecker
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -24,6 +25,7 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         saveDefaultConfig()
         getCommand("striketab").executor = this
         initializePlugin()
+        UpdateChecker(this)
     }
 
     private fun initializePlugin() {
@@ -72,6 +74,7 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         if (admin) {
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab reload${ChatColor.GRAY} - reload the config")
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab debug${ChatColor.GRAY} - toggle debug logging")
+            sender.sendMessage("${PREFIX}Remember to check for updates regularly.")
         }
         return true
     }
