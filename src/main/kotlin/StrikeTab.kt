@@ -70,7 +70,7 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
                 return true
             }
         }
-        sender.sendMessage("${PREFIX}${ChatColor.GOLD}StrikeTab ${description.version} - Tablist for StrikePractice")
+        sender.sendMessage("${PREFIX}${ChatColor.GOLD}StrikeTab ${description.version} - ${this.description.description}")
         if (admin) {
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab reload${ChatColor.GRAY} - reload the config")
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab debug${ChatColor.GRAY} - toggle debug logging")
