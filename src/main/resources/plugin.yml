@@ -11,4 +11,4 @@ commands:
 permissions:
   striketab.admin:
     description: Admin permissions to /striketab commands, update notifications etc.
-    defaultf: false
+    default: false
