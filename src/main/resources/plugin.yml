@@ -1,5 +1,5 @@
 main: ga.strikepractice.striketab.StrikeTab
-version: 0.1.6
+version: 0.2.0
 name: StrikeTab
 author: Toppe5
 depend: [StrikePractice, PlaceholderAPI, ProtocolLib]

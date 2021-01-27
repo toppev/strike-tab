@@ -35,6 +35,8 @@ class UpdateChecker(plugin: StrikeTab) : Listener {
                     (json["message-$currentVer"] ?: json["message"])?.let {
                         joinMessages.add(PREFIX + it.translateColors())
                     }
+
+                    joinMessages.forEach { Bukkit.getLogger().info(it) }
                 }
             } catch (e: Exception) {
                 Bukkit.getLogger().warning("StrikeTab failed to check for updates.")
