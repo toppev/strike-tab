@@ -74,7 +74,6 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         if (admin) {
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab reload${ChatColor.GRAY} - reload the config")
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab debug${ChatColor.GRAY} - toggle debug logging")
-            sender.sendMessage("${PREFIX}Remember to check for updates regularly.")
         }
         return true
     }
