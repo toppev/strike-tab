@@ -19,13 +19,14 @@ val PREFIX = "${ChatColor.GRAY}[${ChatColor.GREEN}StrikeTab${ChatColor.GRAY}] "
 class StrikeTab : JavaPlugin(), CommandExecutor {
 
     private lateinit var tabManager: TabManager
+    private lateinit var updateChecker: UpdateChecker
 
     override fun onEnable() {
         super.onEnable()
         saveDefaultConfig()
         getCommand("striketab").executor = this
         initializePlugin()
-        UpdateChecker(this)
+        updateChecker = UpdateChecker(this)
     }
 
     private fun initializePlugin() {
@@ -69,11 +70,31 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
                 Bukkit.getLogger().info("StrikeTab debug mode set to $DEBUG")
                 return true
             }
+            if (args[0].equals("update", true)) {
+                Bukkit.getScheduler().runTaskAsynchronously(this) {
+                    sender.sendMessage("${ChatColor.GRAY}Checking for updates...")
+                    try {
+                        updateChecker.checkForUpdates()
+                        val messages = updateChecker.joinMessages
+                        if (messages.isEmpty()) {
+                            sender.sendMessage("${ChatColor.GREEN}No updates found.")
+                        } else {
+                            messages.forEach { sender.sendMessage(it) }
+                        }
+                    } catch (e: Exception) {
+                        sender.sendMessage("${ChatColor.RED}Failed to check for updates. Check console.")
+                        sender.sendMessage("${ChatColor.GRAY}${e.message}")
+                        e.printStackTrace()
+                    }
+                }
+                return true
+            }
         }
         sender.sendMessage("${PREFIX}${ChatColor.GOLD}StrikeTab ${description.version} - ${this.description.description}")
         if (admin) {
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab reload${ChatColor.GRAY} - reload the config")
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab debug${ChatColor.GRAY} - toggle debug logging")
+            sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab update${ChatColor.GRAY} - check for updates")
         }
         return true
     }
