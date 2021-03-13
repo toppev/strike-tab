@@ -1,7 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import de.undercouch.gradle.tasks.download.Download
-import org.jetbrains.kotlin.ir.backend.js.compile
 
 val kotlin_version: String by project
 
@@ -38,7 +36,7 @@ dependencies {
 }
 
 configurations.all {
-    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
+    resolutionStrategy.cacheChangingModulesFor(10, "minutes")
 }
 
 tasks {

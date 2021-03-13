@@ -37,7 +37,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
     private lateinit var plugin: StrikeTab
     private val tabs = ConcurrentHashMap<UUID, TabData>()
 
-    private val nameProvider = object : SimpleTabList.NameProvider {
+    private val legacyNameProvider = object : SimpleTabList.NameProvider {
         override fun getName(index: Int) = blankLines[index]
     }
     private val blankLines: List<String> by lazy {
@@ -52,7 +52,6 @@ class TabbedTabUpdater : TabUpdater, Listener {
     override fun onEnable(plugin: StrikeTab) {
         this.plugin = plugin
         tabbed = Tabbed(plugin)
-        SimpleTabList.setNameProvider(nameProvider)
     }
 
     override fun updateTab(player: Player, layout: TabLayout, bypassTimeLimit: Boolean) {
@@ -86,18 +85,23 @@ class TabbedTabUpdater : TabUpdater, Listener {
             }
             val board = player.scoreboard
             layout.slots.forEachIndexed { index, slot ->
-                if (index >= 59) {
+                if (index > 60) {
                     debug { "Blocked main thread for ~${System.currentTimeMillis() - st}ms while updating ${player.name}'s legacy teams" }
                     return@runTaskLater
                 }
                 // 1.7 tab starts ordering top row first, 1.8+ does 1. column first
                 // converts 1.8 -> 1.7 slots
-                val legacyIndex = 3 * ((index % 20) + 1) - ((59 - index) / 20 + 1)
+                var legacyIndex = 3 * ((index % 20) + 1) - ((59 - index) / 20 + 1)
+                // FIXME: doesn't work correctly
+                // for some weird reason index=24 does not show at all?
+                // if we don't do this "skip" it the tab will be one slot offset
+                if(legacyIndex > 24) legacyIndex++
+
                 val teamName = "striketab-$legacyIndex"
                 val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName).also {
-                    it.addEntry(nameProvider.getName(legacyIndex))
+                    it.addEntry(legacyNameProvider.getName(legacyIndex))
                 }
-                updateLegacyTeam(team, slot.text)
+                updateLegacyTeam(team, index.toString())
             }
         }, spreadCounter++ % 10) // spread updates across multiple ticks to avoid lag spikes
     }
@@ -132,18 +136,21 @@ class TabbedTabUpdater : TabUpdater, Listener {
     }
 
     override fun onJoin(player: Player) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
             val tab = tabbed.newTableTabList(player, plugin.config.getInt("tablist.columns"))
+            if (isLegacyClient(player)) {
+                tab.isLegacyTab = true
+                tab.setNameProvider(legacyNameProvider)
+                clearOnlinePlayers(player)
+            }
+            tab.enable()
             tabs[player.uniqueId] = TabData(tab)
             tab.isBatchEnabled = true
-            // because of 1.7 clients, probably can't check if legacy yet so do for everyone
-            clearOnlinePlayers(player)
+
             debug { "Created tablist for ${player.name} (total ${tabs.size} tablists)" }
 
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
-                plugin.tabManager.updateTablist(player)
-            }, 20)
-        }
+            plugin.tabManager.updateTablist(player)
+        }, 10)
     }
 
     // For 1.7 clients
@@ -162,6 +169,13 @@ class TabbedTabUpdater : TabUpdater, Listener {
     override fun onLeave(player: Player) {
         tabs.remove(player.uniqueId)
         debug { "Removed ${player.name}'s tablist (total ${tabs.size} tablists)" }
+
+        player.scoreboard.teams.forEach {
+            if (it.name.contains("striketab")) {
+                it.unregister()
+            }
+        }
+
     }
 
     class TabData(

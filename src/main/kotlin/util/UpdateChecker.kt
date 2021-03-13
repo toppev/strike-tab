@@ -34,7 +34,7 @@ class UpdateChecker(val plugin: StrikeTab) : Listener {
     }
 
     fun checkForUpdates() {
-        val content = URL(UPDATE_URL).readText()
+        val content = URL(UPDATE_URL + "?ver=" + plugin.description.version).readText()
         val json: Map<String, String> = Gson().fromJson(content, MAP_TYPE)
         val latestVer = json["version"] ?: throw Exception("No 'version' in response: $content")
         val currentVer = plugin.description.version
@@ -52,7 +52,7 @@ class UpdateChecker(val plugin: StrikeTab) : Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         val p = event.player
-        if (p.hasPermission("striketab.admin")) {
+        if (p.isOp || p.hasPermission("striketab.admin")) {
             joinMessages.forEach { p.sendMessage(it) }
         }
     }
