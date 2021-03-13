@@ -10,6 +10,7 @@ interface TabUpdater {
 
     fun updateTab(player: Player, layout: TabLayout, bypassTimeLimit: Boolean = false)
 
+    /** Also called on current online players when the plugin enables. */
     fun onJoin(player: Player) { /* optional */ }
 
     fun onLeave(player: Player) { /* optional */ }

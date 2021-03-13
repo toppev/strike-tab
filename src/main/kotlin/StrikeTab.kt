@@ -8,6 +8,7 @@ import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
@@ -53,7 +54,8 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         label: String,
         args: Array<out String>
     ): Boolean {
-        val admin = sender.hasPermission("striketab.admin")
+        val admin = sender.isOp || sender.hasPermission("striketab.admin")
+        if(!admin && DEBUG) Bukkit.getLogger().info("No perms: striketab.admin")
         if (admin && args.isNotEmpty()) {
             if (arrayOf("reload", "rl").contains(args[0].toLowerCase())) {
                 reloadPluginConfig()

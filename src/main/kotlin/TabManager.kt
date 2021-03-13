@@ -93,7 +93,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
     fun updateTablist(player: Player, layoutType: TabLayoutType = getLayout(player), bypassTimeLimit: Boolean = false) {
         if (!isSupportedClient(player)) {
-            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on supported client version (while updating)")
+            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on a supported client version (while updating)")
             return
         }
         val layout = layouts[layoutType]!!
@@ -138,24 +138,24 @@ class TabManager(private val plugin: StrikeTab) : Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         val player = event.player
-        if (!isSupportedClient(player)) {
-            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on supported client version (on join)")
-            return
+        if (isSupportedClient(player)) {
+            updater.onJoin(player)
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
+                updateTablist(player)
+            }, 4)
+        } else if (DEBUG) {
+            Bukkit.getLogger().info("${player.name} is not on a supported client version (on join)")
         }
-        updater.onJoin(player)
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
-            updateTablist(player)
-        }, 4)
     }
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
         val player = event.player
-        if (!isSupportedClient(player)) {
-            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on supported client version (on quit)")
-            return
+        if (isSupportedClient(player)) {
+            updater.onLeave(player)
+        } else if (DEBUG) {
+            Bukkit.getLogger().info("${player.name} is not on a supported client version (on quit)")
         }
-        updater.onLeave(player)
     }
 
     // Update the tablist when the player teleports to a different world or more than 50 blocks.
