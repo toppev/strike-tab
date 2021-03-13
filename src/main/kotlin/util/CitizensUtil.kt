@@ -1,15 +1,13 @@
 package ga.strikepractice.striketab.util
 
-import ga.strikepractice.striketab.DEBUG
+import ga.strikepractice.striketab.debug
 import net.citizensnpcs.api.CitizensAPI
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 val citizensSupport: Boolean by lazy {
     Bukkit.getPluginManager().getPlugin("Citizens")?.isEnabled == true
-        .also {
-            if (DEBUG) Bukkit.getLogger().info("Citizen found: $it")
-        }
+        .also { debug { "Citizen found: $it" } }
 }
 
 fun getCitizensPlayer(name: String): Player? {

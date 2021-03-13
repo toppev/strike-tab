@@ -1,3 +1,5 @@
+# Whether 1.7 clients are supported.
+legacy-support: true
 tablist:
   update-ticks: 100
   columns: 4

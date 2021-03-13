@@ -15,24 +15,23 @@ import com.keenant.tabbed.util.Skins
 import ga.strikepractice.striketab.DEBUG
 import ga.strikepractice.striketab.StrikeTab
 import ga.strikepractice.striketab.TabLayout
-import ga.strikepractice.striketab.TabSlot
+import ga.strikepractice.striketab.debug
 import ga.strikepractice.striketab.util.getCitizensPlayer
 import ga.strikepractice.striketab.util.isLegacyClient
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.scoreboard.Team
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.random.Random
-import org.bukkit.WorldCreator.name
 
 
 val SP_DEFAULT_SKIN: Skin = Skins.DEFAULT_SKIN
 
 class TabbedTabUpdater : TabUpdater, Listener {
+
+    private var spreadCounter = 0L
 
     private lateinit var tabbed: Tabbed
     private lateinit var plugin: StrikeTab
@@ -56,71 +55,61 @@ class TabbedTabUpdater : TabUpdater, Listener {
         SimpleTabList.setNameProvider(nameProvider)
     }
 
-
     override fun updateTab(player: Player, layout: TabLayout, bypassTimeLimit: Boolean) {
         val tabData = tabs[player.uniqueId]
         // comparing to previous layout is a very good performance improvement
         if (tabData?.tablist == null || tabData.previousLayout == layout) return
         if (bypassTimeLimit || tabData.lastUpdated + 500 < System.currentTimeMillis()) {
             val tab = tabData.tablist
-            var counter = 0
             layout.slots.forEachIndexed { index, slot ->
                 tab.set(index, TextTabItem(slot.text, slot.ping, getSkin(slot.skin)))
             }
             if (layout.footer != null && tab.footer != layout.footer) tab.footer = layout.footer
             if (layout.header != null && tab.header != layout.header) tab.header = layout.header
             tab.batchUpdate()
+            if (isLegacyClient(player)) {
+                handleLegacyClient(player, layout)
+            }
             tabData.previousLayout = layout
             tabData.lastUpdated = System.currentTimeMillis()
-            if (isLegacyClient(player)) handleLegacyClient(player, layout)
-            if (DEBUG) {
-                Bukkit.getLogger().info("(Batch)updated ${player.name}'s tab slots.")
-            }
+            debug { "(Batch)updated ${player.name}'s tab slots." }
         }
     }
 
     // Kind of a temp fix for 1.7 clients (still testing)
-    // TODO: better performance?
     private fun handleLegacyClient(player: Player, layout: TabLayout) {
         // can't really change teams asynchronously
-        Bukkit.getScheduler().runTask(plugin) {
+        Bukkit.getScheduler().runTaskLater(plugin, {
+            val st = if (DEBUG) System.currentTimeMillis() else 0
+            if (player.scoreboard == Bukkit.getScoreboardManager().mainScoreboard) {
+                player.scoreboard = Bukkit.getScoreboardManager().newScoreboard
+            }
             val board = player.scoreboard
             layout.slots.forEachIndexed { index, slot ->
-                if (index >= 59) return@runTask
-                // refactor?
-                val legacyIndex = when {
-                    index < 20 -> 3 * (index + 1) - 3
-                    index < 40 -> 3 * ((index % 20) + 1) - 2
-                    else -> 3 * ((index % 20) + 1) - 1
+                if (index >= 59) {
+                    debug { "Blocked main thread for ~${System.currentTimeMillis() - st}ms while updating ${player.name}'s legacy teams" }
+                    return@runTaskLater
                 }
-                if(legacyIndex < 0) println(legacyIndex.toString() + " from " + index)
-
+                // 1.7 tab starts ordering top row first, 1.8+ does 1. column first
+                // converts 1.8 -> 1.7 slots
+                val legacyIndex = 3 * ((index % 20) + 1) - ((59 - index) / 20 + 1)
                 val teamName = "striketab-$legacyIndex"
-                val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName)
-                val nmsName = nameProvider.getName(legacyIndex)
-                if (!team.hasEntry(nmsName)) team.addEntry(nmsName)
+                val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName).also {
+                    it.addEntry(nameProvider.getName(legacyIndex))
+                }
                 updateLegacyTeam(team, slot.text)
             }
-        }
+        }, spreadCounter++ % 10) // spread updates across multiple ticks to avoid lag spikes
     }
 
     private fun updateLegacyTeam(team: Team, text: String) {
-        if (text.length > 16) {
-            team.prefix = text.substring(0, 16)
-            var suffix = ChatColor.getLastColors(team.prefix) + text.substring(16)
-            if (suffix.length > 16) {
-                if (suffix.length <= 16) {
-                    suffix = text.substring(16)
-                    team.suffix = suffix
-                } else {
-                    team.suffix = suffix.substring(0, 16)
-                }
-            } else {
-                team.suffix = suffix
-            }
-        } else {
+        if (text.length <= 16) {
             team.prefix = text
             team.suffix = ""
+        } else {
+            team.prefix = text.substring(0, 16)
+            val suffix = ChatColor.getLastColors(team.prefix) + text.substring(16)
+            team.suffix = suffix.take(16)
         }
     }
 
@@ -147,10 +136,13 @@ class TabbedTabUpdater : TabUpdater, Listener {
             val tab = tabbed.newTableTabList(player, plugin.config.getInt("tablist.columns"))
             tabs[player.uniqueId] = TabData(tab)
             tab.isBatchEnabled = true
+            // because of 1.7 clients, probably can't check if legacy yet so do for everyone
             clearOnlinePlayers(player)
-            if (DEBUG) {
-                Bukkit.getLogger().info("Created tablist for ${player.name} (total ${tabs.size} tablists)")
-            }
+            debug { "Created tablist for ${player.name} (total ${tabs.size} tablists)" }
+
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
+                plugin.tabManager.updateTablist(player)
+            }, 20)
         }
     }
 
@@ -159,7 +151,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
         val names = Bukkit.getOnlinePlayers().map {
             PlayerInfoData(
                 WrappedGameProfile.fromPlayer(it),
-                0,
+                1,
                 NativeGameMode.SURVIVAL,
                 WrappedChatComponent.fromText(it.name)
             )
@@ -169,9 +161,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
 
     override fun onLeave(player: Player) {
         tabs.remove(player.uniqueId)
-        if (DEBUG) {
-            Bukkit.getLogger().info("Removed ${player.name}'s tablist (total ${tabs.size} tablists)")
-        }
+        debug { "Removed ${player.name}'s tablist (total ${tabs.size} tablists)" }
     }
 
     class TabData(

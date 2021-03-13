@@ -93,7 +93,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
     fun updateTablist(player: Player, layoutType: TabLayoutType = getLayout(player), bypassTimeLimit: Boolean = false) {
         if (!isSupportedClient(player)) {
-            if (DEBUG) Bukkit.getLogger().info("${player.name} is not on a supported client version (while updating)")
+            debug { "${player.name} is not on a supported client version (while updating)" }
             return
         }
         val layout = layouts[layoutType]!!
@@ -125,7 +125,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         if (DEBUG) {
             val diff = System.currentTimeMillis() - st
             if (diff > 30) {
-                Bukkit.getLogger().info("Placeholders etc for ${player.name} took longer than expected $diff ms.")
+                debug { "Placeholders etc for ${player.name} took longer than expected $diff ms." }
             }
         }
         updater.updateTab(
@@ -143,8 +143,8 @@ class TabManager(private val plugin: StrikeTab) : Listener {
             Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
                 updateTablist(player)
             }, 4)
-        } else if (DEBUG) {
-            Bukkit.getLogger().info("${player.name} is not on a supported client version (on join)")
+        } else {
+            debug { "${player.name} is not on a supported client version (on join)" }
         }
     }
 
@@ -153,8 +153,8 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         val player = event.player
         if (isSupportedClient(player)) {
             updater.onLeave(player)
-        } else if (DEBUG) {
-            Bukkit.getLogger().info("${player.name} is not on a supported client version (on quit)")
+        } else {
+            debug { "${player.name} is not on a supported client version (on quit)" }
         }
     }
 
@@ -164,9 +164,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
         if (event.from.world !== event.to.world || event.from.distanceSquared(event.to) > 50 * 50) {
             val player = event.player
             Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
-                if (DEBUG) {
-                    Bukkit.getLogger().info("Updating (teleport) ${player.name} tablist (type: ${getLayout(player)}")
-                }
+                debug { "Updating (teleport) ${player.name} tablist (type: ${getLayout(player)}" }
                 updateTablist(player, bypassTimeLimit = true)
             }, 4)
         }

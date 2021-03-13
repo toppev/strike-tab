@@ -2,13 +2,13 @@ package ga.strikepractice.striketab
 
 import com.keenant.tabbed.util.Reflection
 import ga.strikepractice.striketab.updater.TabUpdateTask
+import ga.strikepractice.striketab.util.LEGACY_SUPPORT
 import ga.strikepractice.striketab.util.UpdateChecker
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
@@ -16,10 +16,11 @@ import java.lang.reflect.Field
 
 var DEBUG = false
 val PREFIX = "${ChatColor.GRAY}[${ChatColor.GREEN}StrikeTab${ChatColor.GRAY}] "
+val DEBUG_PREFIX: String = ChatColor.stripColor(PREFIX) + "debug: "
 
 class StrikeTab : JavaPlugin(), CommandExecutor {
 
-    private lateinit var tabManager: TabManager
+    internal lateinit var tabManager: TabManager
     private lateinit var updateChecker: UpdateChecker
 
     override fun onEnable() {
@@ -44,6 +45,13 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
     private fun reloadPluginConfig() {
         Bukkit.getLogger().info("Reloading config...")
         reloadConfig()
+        LEGACY_SUPPORT = config.getBoolean("legacy-support")
+        Bukkit.getLogger().info("Legacy support ${if (LEGACY_SUPPORT) "enabled" else "disabled"}")
+        if (LEGACY_SUPPORT && Bukkit.getMaxPlayers() < 60) {
+            Bukkit.getLogger().warning(
+                "Max player is below 60 (${Bukkit.getMaxPlayers()})! Tab may not work correctly on 1.7 clients!"
+            )
+        }
         initializePlugin()
         Bukkit.getLogger().info("Plugin config reloaded successfully.")
     }
@@ -55,7 +63,7 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         args: Array<out String>
     ): Boolean {
         val admin = sender.isOp || sender.hasPermission("striketab.admin")
-        if(!admin && DEBUG) Bukkit.getLogger().info("No perms: striketab.admin")
+        if (!admin && DEBUG) Bukkit.getLogger().info("No perms: striketab.admin")
         if (admin && args.isNotEmpty()) {
             if (arrayOf("reload", "rl").contains(args[0].toLowerCase())) {
                 reloadPluginConfig()
@@ -107,6 +115,12 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
  * Translate Bukkit ChatColors
  */
 fun String.translateColors(): String = ChatColor.translateAlternateColorCodes('&', this)
+
+inline fun debug(message: () -> String) {
+    if (DEBUG) {
+        Bukkit.getLogger().info(DEBUG_PREFIX + message.invoke())
+    }
+}
 
 private lateinit var pingField: Field
 fun getPing(player: Player): Int {

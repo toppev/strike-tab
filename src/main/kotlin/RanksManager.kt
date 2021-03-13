@@ -47,9 +47,8 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
         rankList.entries.forEach { (perm, prefix) ->
             if (event.player.hasPermission(perm)) {
                 event.player.playerListName = prefix + event.player.name
-                if (DEBUG) {
-                    Bukkit.getLogger()
-                        .info("Set ${event.player.name}'s tab name to $prefix${event.player.name} because they had $perm permission")
+                debug {
+                    "Set ${event.player.name}'s tab name to $prefix${event.player.name} because they had $perm permission"
                 }
                 return
             }
@@ -65,7 +64,7 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
         CompletableFuture.runAsync {
             val temp = Bukkit.getOnlinePlayers().sortedWith(tabPriorityComparator.reversed()).map { it.uniqueId }
             if (DEBUG && temp != orderedPlayerList) {
-                Bukkit.getLogger().info("Reordered tab: ${temp.map { Bukkit.getPlayer(it)?.name }}")
+                debug { "Reordered tab: ${temp.map { Bukkit.getPlayer(it)?.name }}" }
             }
             orderedPlayerList = temp
         }
