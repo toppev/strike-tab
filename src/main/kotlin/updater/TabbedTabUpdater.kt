@@ -45,7 +45,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
             ChatColor.values().map {
                 it.toString().repeat(index) + ChatColor.RESET
             }
-        }
+        }.distinct()
     }
 
 
@@ -85,7 +85,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
             }
             val board = player.scoreboard
             layout.slots.forEachIndexed { index, slot ->
-                if (index > 60) {
+                if (index > 59) {
                     debug { "Blocked main thread for ~${System.currentTimeMillis() - st}ms while updating ${player.name}'s legacy teams" }
                     return@runTaskLater
                 }
@@ -101,7 +101,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName).also {
                     it.addEntry(legacyNameProvider.getName(legacyIndex))
                 }
-                updateLegacyTeam(team, index.toString())
+                updateLegacyTeam(team, slot.text)
             }
         }, spreadCounter++ % 10) // spread updates across multiple ticks to avoid lag spikes
     }
