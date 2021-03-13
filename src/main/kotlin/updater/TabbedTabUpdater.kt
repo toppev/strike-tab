@@ -85,18 +85,23 @@ class TabbedTabUpdater : TabUpdater, Listener {
             }
             val board = player.scoreboard
             layout.slots.forEachIndexed { index, slot ->
-                if (index >= 59) {
+                if (index > 60) {
                     debug { "Blocked main thread for ~${System.currentTimeMillis() - st}ms while updating ${player.name}'s legacy teams" }
                     return@runTaskLater
                 }
                 // 1.7 tab starts ordering top row first, 1.8+ does 1. column first
                 // converts 1.8 -> 1.7 slots
-                val legacyIndex = 3 * ((index % 20) + 1) - ((59 - index) / 20 + 1)
+                var legacyIndex = 3 * ((index % 20) + 1) - ((59 - index) / 20 + 1)
+                // FIXME: doesn't work correctly
+                // for some weird reason index=24 does not show at all?
+                // if we don't do this "skip" it the tab will be one slot offset
+                if(legacyIndex > 24) legacyIndex++
+
                 val teamName = "striketab-$legacyIndex"
                 val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName).also {
                     it.addEntry(legacyNameProvider.getName(legacyIndex))
                 }
-                updateLegacyTeam(team, slot.text)
+                updateLegacyTeam(team, index.toString())
             }
         }, spreadCounter++ % 10) // spread updates across multiple ticks to avoid lag spikes
     }
@@ -166,7 +171,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
         debug { "Removed ${player.name}'s tablist (total ${tabs.size} tablists)" }
 
         player.scoreboard.teams.forEach {
-            if (it.name.startsWith("striketab")) {
+            if (it.name.contains("striketab")) {
                 it.unregister()
             }
         }
