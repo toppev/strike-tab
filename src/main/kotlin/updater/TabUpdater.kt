@@ -18,4 +18,6 @@ interface TabUpdater {
     fun onLeave(player: Player) { /* optional */
     }
 
+    fun supportedSkins(): Iterable<String>
+
 }

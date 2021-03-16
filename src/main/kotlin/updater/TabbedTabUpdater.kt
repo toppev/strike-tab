@@ -47,6 +47,17 @@ class TabbedTabUpdater : TabUpdater, Listener {
             }
         }.distinct()
     }
+    private val skinMapping = mapOf<String, Skin>(
+        "COBBLE" to Skins.BLOCK_COBBLE,
+        "LOG" to Skins.BLOCK_LOG,
+        "AQUARIUM" to Skins.DECOR_AQUARIUM,
+        "CLOCK" to Skins.DECOR_CLOCK,
+        "DOUGHNUT" to Skins.DECOR_DOUGHNUT,
+        "PRESENT" to Skins.DECOR_PRESENT,
+        "RADIO" to Skins.DECOR_RADIO,
+        "SKULL" to Skins.DECOR_SKULL,
+        "TV" to Skins.DECOR_TV,
+    ) + ChatColor.values().map { "DOT_$it" to Skins.getDot(it) }
 
 
     override fun onEnable(plugin: StrikeTab) {
@@ -95,7 +106,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 // FIXME: doesn't work correctly
                 // for some weird reason index=24 does not show at all?
                 // if we don't do this "skip" it the tab will be one slot offset
-                if(legacyIndex > 24) legacyIndex++
+                if (legacyIndex > 24) legacyIndex++
 
                 val teamName = "striketab-$legacyIndex"
                 val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName).also {
@@ -120,9 +131,13 @@ class TabbedTabUpdater : TabUpdater, Listener {
     private fun getSkin(name: String?): Skin {
         if (!name.isNullOrBlank()) {
             try {
-                val op = Bukkit.getPlayerExact(name) ?: getCitizensPlayer(name)
-                if (op != null) {
-                    return Skins.getPlayer(op)
+                val builtIn = skinMapping[name]
+                if (builtIn != null) {
+                    return builtIn
+                }
+                val playerSkin = Bukkit.getPlayerExact(name) ?: getCitizensPlayer(name)
+                if (playerSkin != null) {
+                    return Skins.getPlayer(playerSkin)
                 }
                 @Suppress("DEPRECATION")
                 val of = Bukkit.getOfflinePlayer(name)
@@ -177,6 +192,8 @@ class TabbedTabUpdater : TabUpdater, Listener {
         }
 
     }
+
+    override fun supportedSkins(): Iterable<String> = skinMapping.keys
 
     class TabData(
         val tablist: TableTabList,

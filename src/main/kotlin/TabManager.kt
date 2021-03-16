@@ -18,7 +18,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
     private val layouts = EnumMap<TabLayoutType, TabLayout>(TabLayoutType::class.java)
 
     private val ranksManager = RanksManager(plugin)
-    private val updater: TabUpdater = TabbedTabUpdater()
+    internal val updater: TabUpdater = TabbedTabUpdater()
     private val placeholders = Placeholders()
     private val columns = plugin.config.getInt("tablist.columns")
     private val columnSize = when (columns) {
@@ -36,6 +36,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
             updater.onLeave(it)
             updater.onJoin(it)
         }
+        Bukkit.getLogger().info("Supported built-in skins: ${updater.supportedSkins().joinToString(separator = ", ")}")
     }
 
     private fun parseListOrString(key: String): String {

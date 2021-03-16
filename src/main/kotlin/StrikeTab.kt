@@ -99,12 +99,18 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
                 }
                 return true
             }
+            if (args[0].equals("skins", true)) {
+                sender.sendMessage("${PREFIX}Currently supported custom skins (additionally to online and offline player skins):")
+                val str = tabManager.updater.supportedSkins().joinToString(separator=", ")
+                sender.sendMessage(ChatColor.GRAY.toString() + str)
+            }
         }
         sender.sendMessage("${PREFIX}${ChatColor.GOLD}StrikeTab ${description.version} - ${this.description.description}")
         if (admin) {
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab reload${ChatColor.GRAY} - reload the config")
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab debug${ChatColor.GRAY} - toggle debug logging")
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab update${ChatColor.GRAY} - check for updates")
+            sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab skins${ChatColor.GRAY} - currently supported skins")
         }
         return true
     }
