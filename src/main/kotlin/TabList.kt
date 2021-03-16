@@ -41,6 +41,7 @@ data class TabSlot(
 
     companion object {
 
+        // TODO: support lunarclient ping that disables the network icon thing
         private const val DEFAULT_PING = 0
 
         fun fromString(str: String): TabSlot {
