@@ -101,7 +101,7 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
             }
             if (args[0].equals("skins", true)) {
                 sender.sendMessage("${PREFIX}Currently supported custom skins (additionally to online and offline player skins):")
-                val str = tabManager.updater.supportedSkins().joinToString(separator=", ")
+                val str = tabManager.updater.supportedSkins().sorted().joinToString(separator=", ")
                 sender.sendMessage(ChatColor.GRAY.toString() + str)
             }
         }
