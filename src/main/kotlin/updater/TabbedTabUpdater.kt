@@ -57,7 +57,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
         "RADIO" to Skins.DECOR_RADIO,
         "SKULL" to Skins.DECOR_SKULL,
         "TV" to Skins.DECOR_TV,
-    ) + ChatColor.values().map { "DOT_$it" to Skins.getDot(it) }
+    ) + ChatColor.values().take(16).map { "DOT_${it.name}" to Skins.getDot(it) }
 
 
     override fun onEnable(plugin: StrikeTab) {
