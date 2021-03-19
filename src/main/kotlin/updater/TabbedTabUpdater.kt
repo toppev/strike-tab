@@ -47,6 +47,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
             }
         }.distinct()
     }
+
     private val skinMapping = mapOf<String, Skin>(
         "COBBLE" to Skins.BLOCK_COBBLE,
         "LOG" to Skins.BLOCK_LOG,
@@ -70,14 +71,20 @@ class TabbedTabUpdater : TabUpdater, Listener {
         // comparing to previous layout is a very good performance improvement
         if (tabData?.tablist == null || tabData.previousLayout == layout) return
         if (bypassTimeLimit || tabData.lastUpdated + 500 < System.currentTimeMillis()) {
-            val tab = tabData.tablist
-            layout.slots.forEachIndexed { index, slot ->
-                tab.set(index, TextTabItem(slot.text, slot.ping, getSkin(slot.skin)))
+            val legacy = isLegacyClient(player)
+            // We want to update only once for legacy clients, otherwise the tab may be in wrong order because of changes
+            // Therefore, ping etc are not updated for legacy clients which is ok
+            if (!legacy || !tabData.legacyInit) {
+                val tab = tabData.tablist
+                layout.slots.forEachIndexed { index, slot ->
+                    tab.set(index, TextTabItem(slot.text, slot.ping, getSkin(slot.skin)))
+                }
+                if (layout.footer != null && tab.footer != layout.footer) tab.footer = layout.footer
+                if (layout.header != null && tab.header != layout.header) tab.header = layout.header
+                tab.batchUpdate()
+                tabData.legacyInit = true
             }
-            if (layout.footer != null && tab.footer != layout.footer) tab.footer = layout.footer
-            if (layout.header != null && tab.header != layout.header) tab.header = layout.header
-            tab.batchUpdate()
-            if (isLegacyClient(player)) {
+            if (legacy) {
                 handleLegacyClient(player, layout)
             }
             tabData.previousLayout = layout
@@ -107,12 +114,12 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 // for some weird reason index=24 does not show at all?
                 // if we don't do this "skip" it the tab will be one slot offset
                 if (legacyIndex > 24) legacyIndex++
-
-                val teamName = "striketab-$legacyIndex"
+                val teamName = Random().nextInt(1000).toString() + "-$legacyIndex"
+                println(teamName + " " + index + " " + slot.text)
                 val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName).also {
                     it.addEntry(legacyNameProvider.getName(legacyIndex))
                 }
-                updateLegacyTeam(team, slot.text)
+                updateLegacyTeam(team, ChatColor.RESET.toString() + slot.text)
             }
         }, spreadCounter++ % 10) // spread updates across multiple ticks to avoid lag spikes
     }
@@ -152,8 +159,9 @@ class TabbedTabUpdater : TabUpdater, Listener {
 
     override fun onJoin(player: Player) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
+            val legacyClient = isLegacyClient(player)
             val tab = tabbed.newTableTabList(player, plugin.config.getInt("tablist.columns"))
-            if (isLegacyClient(player)) {
+            if (legacyClient) {
                 tab.isLegacyTab = true
                 tab.setNameProvider(legacyNameProvider)
                 clearOnlinePlayers(player)
@@ -165,7 +173,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
             debug { "Created tablist for ${player.name} (total ${tabs.size} tablists)" }
 
             plugin.tabManager.updateTablist(player)
-        }, 10)
+        }, 15)
     }
 
     // For 1.7 clients
@@ -199,7 +207,9 @@ class TabbedTabUpdater : TabUpdater, Listener {
         val tablist: TableTabList,
         var previousLayout: TabLayout? = null,
         var lastUpdated: Long = 0,
-    )
+        var legacyInit: Boolean = false
+    ) {
+    }
 
 
 }
