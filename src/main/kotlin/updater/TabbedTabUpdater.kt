@@ -115,7 +115,6 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 // if we don't do this "skip" it the tab will be one slot offset
                 if (legacyIndex > 24) legacyIndex++
                 val teamName = Random().nextInt(1000).toString() + "-$legacyIndex"
-                println(teamName + " " + index + " " + slot.text)
                 val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName).also {
                     it.addEntry(legacyNameProvider.getName(legacyIndex))
                 }
