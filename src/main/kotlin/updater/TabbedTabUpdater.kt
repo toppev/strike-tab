@@ -27,7 +27,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 
-val SP_DEFAULT_SKIN: Skin = Skins.DEFAULT_SKIN
+val DEFAULT_SKIN: Skin = Skins.DEFAULT_SKIN
 
 class TabbedTabUpdater : TabUpdater, Listener {
 
@@ -153,7 +153,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 e.printStackTrace()
             }
         }
-        return SP_DEFAULT_SKIN
+        return DEFAULT_SKIN
     }
 
     override fun onJoin(player: Player) {

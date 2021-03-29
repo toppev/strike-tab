@@ -24,7 +24,7 @@ sort-ranks:
 
 slots:
   # You can use "ping=<number>" e.g "ping=10" to set the ping
-  # Use "skin=<skin>" e.g "skin=Toppe5" to set the skin (currently not really working)
+  # Use "skin=<skin>" e.g "skin=Toppe5" to set the skin
   # Use "/striketab skins" to see all available skins.
   default:
     column-1:
