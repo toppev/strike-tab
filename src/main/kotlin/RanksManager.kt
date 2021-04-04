@@ -24,7 +24,7 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
         val config = plugin.config
         rankList = config.getConfigurationSection("sort-ranks").getKeys(false).map {
             config.getString("sort-ranks.$it.permission") to config.getString("sort-ranks.$it.prefix")
-                ?.translateColors()
+                    ?.translateColors()
         }.toMap()
         Bukkit.getLogger().info("Loaded tab ranks (in order): $rankList")
         // Greater if has more players (we reverse order the players)

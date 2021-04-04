@@ -70,14 +70,14 @@ class TabManager(private val plugin: StrikeTab) : Listener {
                     if (temp.size > columnSize) {
                         temp.subList(0, columnSize)
                         Bukkit.getLogger()
-                            .warning("Tablist at $path has too many slots! ${temp.size} > $columnSize")
+                                .warning("Tablist at $path has too many slots! ${temp.size} > $columnSize")
                     }
                     slots += temp
                 }
                 val layout = TabLayout.parse(
-                    slots.map { it.translateColors() },
-                    header?.translateColors(),
-                    footer?.translateColors()
+                        slots.map { it.translateColors() },
+                        header?.translateColors(),
+                        footer?.translateColors()
                 )
                 layouts[type] = layout
                 Bukkit.getLogger().info("$type tablist loaded")
@@ -107,21 +107,21 @@ class TabManager(private val plugin: StrikeTab) : Listener {
                 val realPlayer = ranksManager.getNextPlayer(playerIndex++)
                 if (realPlayer != null) {
                     return@map slot.copy(
-                        text = realPlayer.playerListName,
-                        skin = realPlayer.name,
-                        ping = getPing(player),
+                            text = realPlayer.playerListName,
+                            skin = realPlayer.name,
+                            ping = getPing(player),
                     )
                 }
             }
             return@map slot.copy(
-                text = text,
-                skin = if (slot.skin == null) null else placeholders.handlePlaceHolders(player, slot.skin),
+                    text = text,
+                    skin = if (slot.skin == null) null else placeholders.handlePlaceHolders(player, slot.skin),
             )
         }
         val personalLayout = layout.copy(
-            slots = personalSlots,
-            header = layout.header?.let { placeholders.handlePlaceHolders(player, it) },
-            footer = layout.footer?.let { placeholders.handlePlaceHolders(player, it) },
+                slots = personalSlots,
+                header = layout.header?.let { placeholders.handlePlaceHolders(player, it) },
+                footer = layout.footer?.let { placeholders.handlePlaceHolders(player, it) },
         )
         if (DEBUG) {
             val diff = System.currentTimeMillis() - st
@@ -130,9 +130,9 @@ class TabManager(private val plugin: StrikeTab) : Listener {
             }
         }
         updater.updateTab(
-            player,
-            personalLayout,
-            bypassTimeLimit
+                player,
+                personalLayout,
+                bypassTimeLimit
         )
     }
 
