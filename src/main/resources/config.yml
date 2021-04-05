@@ -13,13 +13,13 @@ footer:
 # Used to sort players in tab
 sort-ranks:
   admin:
-    permission: 'strikepractice.admin'
+    permission: 'striketab.admin'
     prefix: '&c'
   staff:
-    permission: 'strikepractice.staff'
+    permission: 'striketab.staff'
     prefix: '&d'
   donator:
-    permission: 'strikepractice.donator'
+    permission: 'striketab.donator'
     prefix: '&e'
 
 slots:
