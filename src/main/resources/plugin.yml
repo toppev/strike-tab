@@ -3,11 +3,11 @@ version: 0.3.3
 name: StrikeTab
 author: Toppe5
 description: Tablist addon for StrikePractice
-depend: [ StrikePractice, PlaceholderAPI, ProtocolLib ]
-softdepend: [ Citizens, ViaVersion, ViaRewind ]
+depend: [PlaceholderAPI, ProtocolLib]
+softdepend: [StrikePractice, Citizens, ViaVersion, ViaRewind]
 commands:
   striketab:
-    aliases: [ spractab ]
+    aliases: [spractab]
 
 permissions:
   striketab.admin:

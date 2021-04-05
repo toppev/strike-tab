@@ -14,8 +14,8 @@ import com.keenant.tabbed.util.Skin
 import com.keenant.tabbed.util.Skins
 import ga.strikepractice.striketab.DEBUG
 import ga.strikepractice.striketab.StrikeTab
-import ga.strikepractice.striketab.TabLayout
 import ga.strikepractice.striketab.debug
+import ga.strikepractice.striketab.layout.TabLayout
 import ga.strikepractice.striketab.util.getCitizensPlayer
 import ga.strikepractice.striketab.util.isLegacyClient
 import org.bukkit.Bukkit
@@ -73,7 +73,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
         if (bypassTimeLimit || tabData.lastUpdated + 500 < System.currentTimeMillis()) {
             val legacy = isLegacyClient(player)
             // We want to update only once for legacy clients, otherwise the tab may be in wrong order because of changes
-            // Therefore, ping etc are not updated for legacy clients which is ok
+            // Thus, ping etc are not updated for legacy clients which is ok
             if (!legacy || !tabData.legacyInit) {
                 val tab = tabData.tablist
                 layout.slots.forEachIndexed { index, slot ->

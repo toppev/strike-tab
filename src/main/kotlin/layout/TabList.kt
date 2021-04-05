@@ -1,4 +1,4 @@
-package ga.strikepractice.striketab
+package ga.strikepractice.striketab.layout
 
 import ga.strikepractice.StrikePractice
 import org.bukkit.entity.Player
@@ -21,17 +21,6 @@ enum class TabLayoutType {
     DEFAULT,
     IN_MATCH,
 }
-
-fun getLayout(player: Player): TabLayoutType {
-    val api = StrikePractice.getAPI()
-    return when {
-        api.isInFight(player) -> TabLayoutType.IN_MATCH
-        // Add more here
-        else -> TabLayoutType.DEFAULT
-    }
-
-}
-
 
 data class TabSlot(
     val text: String,
