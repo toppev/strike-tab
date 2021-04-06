@@ -1,7 +1,7 @@
 package ga.strikepractice.striketab.updater
 
 import ga.strikepractice.striketab.StrikeTab
-import ga.strikepractice.striketab.TabLayout
+import ga.strikepractice.striketab.layout.TabLayout
 import org.bukkit.entity.Player
 
 interface TabUpdater {
