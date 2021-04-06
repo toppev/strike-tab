@@ -1,6 +1,6 @@
 {
   "README": "This file is used to check for updates and the changelog",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "message": "New in v0.3.3: Built-in skins (see /striketab skins) and minor tweaks/fixes",
   "message-v0.3.4": "Fixed a memory leak in 1.7 tabs"
 }
