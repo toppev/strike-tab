@@ -115,9 +115,9 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 // if we don't do this "skip" it the tab will be one slot offset
                 if (legacyIndex > 24) legacyIndex++
                 val teamName = "striketab-$legacyIndex"
-                val team = board.getTeam(teamName) ?: board.registerNewTeam(teamName).also {
+                val team = board.getTeam(teamName) ?: (board.registerNewTeam(teamName).also {
                     it.addEntry(legacyNameProvider.getName(legacyIndex))
-                }
+                })
                 updateLegacyTeam(team, ChatColor.RESET.toString() + slot.text)
             }
         }, spreadCounter++ % 10) // spread updates across multiple ticks to avoid lag spikes
@@ -158,9 +158,8 @@ class TabbedTabUpdater : TabUpdater, Listener {
 
     override fun onJoin(player: Player) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, {
-            val legacyClient = isLegacyClient(player)
             val tab = tabbed.newTableTabList(player, plugin.config.getInt("tablist.columns"))
-            if (legacyClient) {
+            if (isLegacyClient(player)) {
                 tab.isLegacyTab = true
                 tab.setNameProvider(legacyNameProvider)
                 clearOnlinePlayers(player)

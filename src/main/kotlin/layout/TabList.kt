@@ -1,8 +1,5 @@
 package ga.strikepractice.striketab.layout
 
-import ga.strikepractice.StrikePractice
-import org.bukkit.entity.Player
-
 
 data class TabLayout(
     val slots: List<TabSlot>,
@@ -30,7 +27,6 @@ data class TabSlot(
 
     companion object {
 
-        // TODO: support lunarclient ping that disables the network icon thing
         private const val DEFAULT_PING = 0
 
         fun fromString(str: String): TabSlot {
@@ -40,7 +36,7 @@ data class TabSlot(
             val text = str.replace("skin=$skin", "").replace("ping=$ping", "")
             return TabSlot(
                 text = text,
-                skin = if (skin.isBlank()) null else skin,
+                skin = skin.ifBlank { null },
                 ping = ping.toIntOrNull() ?: DEFAULT_PING
             )
         }
