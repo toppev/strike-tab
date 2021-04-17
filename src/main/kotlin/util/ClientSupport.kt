@@ -10,8 +10,10 @@ import us.myles.ViaVersion.api.Via
 var LEGACY_SUPPORT = true
 
 private val viaVersionSupport: Boolean by lazy {
-    Bukkit.getPluginManager().getPlugin("ViaRewind")?.isEnabled ?: false
-}.also { Bukkit.getLogger().info("${PREFIX}ViaRewind support detected") }
+    (Bukkit.getPluginManager().getPlugin("ViaRewind")?.isEnabled ?: false).also {
+        if (it) Bukkit.getLogger().info("${PREFIX}ViaRewind support detected")
+    }
+}
 
 fun isSupportedClient(player: Player) = LEGACY_SUPPORT || !isLegacyClient(player)
 
