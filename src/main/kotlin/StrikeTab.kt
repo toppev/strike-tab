@@ -13,6 +13,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.reflect.Field
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
 var DEBUG = false
@@ -82,7 +83,7 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
                 return true
             }
             if (args[0].equals("update", true)) {
-                Bukkit.getScheduler().runTaskAsynchronously(this) {
+                CompletableFuture.runAsync {
                     sender.sendMessage("${ChatColor.GRAY}Checking for updates...")
                     try {
                         updateChecker.checkForUpdates()
@@ -114,7 +115,7 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab update${ChatColor.GRAY} - check for updates")
             sender.sendMessage("${PREFIX}${ChatColor.YELLOW}/striketab skins${ChatColor.GRAY} - currently supported skins")
             if (System.currentTimeMillis() - updateChecker.lastChecked > TimeUnit.MINUTES.toMillis(10)) {
-                updateChecker.checkForUpdates()
+                CompletableFuture.runAsync { updateChecker.checkForUpdates() }
             }
         }
         return true

@@ -34,6 +34,10 @@ class UpdateChecker(val plugin: StrikeTab) : Listener {
         }, 0, HOURS.toSeconds(12) * 20)
     }
 
+    /**
+     * Checks for updates.
+     * WARNING: this is blocking!!
+     */
     fun checkForUpdates() {
         Bukkit.getLogger().info("Checking for StrikeTab updates...")
         val content = URL(UPDATE_URL + "?ver=" + plugin.description.version).readText()
