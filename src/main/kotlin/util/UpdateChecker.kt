@@ -14,10 +14,10 @@ import java.lang.reflect.Type
 import java.net.URL
 import java.util.concurrent.TimeUnit.HOURS
 
-const val UPDATE_URL = "https://toppe.dev/striketab/version.json"
-val MAP_TYPE: Type = object : TypeToken<Map<String?, String?>>() {}.type
+private const val UPDATE_URL = "https://toppe.dev/striketab/version.json"
+private val MAP_TYPE: Type = object : TypeToken<Map<String?, String?>>() {}.type
 
-class UpdateChecker(val plugin: StrikeTab) : Listener {
+class UpdateChecker(private val plugin: StrikeTab) : Listener {
 
     val joinMessages = mutableSetOf<String>()
     var lastChecked: Long = 0
