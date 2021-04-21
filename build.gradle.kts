@@ -16,8 +16,8 @@ repositories {
     mavenCentral()
     maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
-    maven { url = uri("http://repo.extendedclip.com/content/repositories/placeholderapi/") }
-    maven { url = uri("http://repo.citizensnpcs.co/") }
+    maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
+    maven { url = uri("https://repo.citizensnpcs.co/") }
     flatDir { dirs("libs") }
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://repo.dmulloy2.net/nexus/repository/public/") }
