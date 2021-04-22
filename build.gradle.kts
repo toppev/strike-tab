@@ -31,11 +31,12 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("net.citizensnpcs:citizens:2.0.13-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
-    implementation("com.github.toppev:tabbed:master-SNAPSHOT")
+    implementation("com.github.toppev:tabbed:-SNAPSHOT")
     compileOnly("us.myles:viaversion:viaversion")
 }
 
 configurations.all {
+    // Don't try to update the tabbed fork from github with jitpack every time (to reduce compilation time in subsequent builds)
     resolutionStrategy.cacheChangingModulesFor(10, "minutes")
 }
 
@@ -44,7 +45,9 @@ tasks {
     register("download-viaversion") {
         val dest = "./libs/viaversion.jar"
         val source = "https://repo.viaversion.com/everything/us/myles/viaversion/3.2.1/viaversion-3.2.1.jar"
-        if (!File(dest).exists()) download(source, dest)
+        if (!File(dest).exists()) {
+            download(source, dest)
+        }
     }
     named<ShadowJar>("shadowJar") {
         archiveBaseName.set("StrikeTab")

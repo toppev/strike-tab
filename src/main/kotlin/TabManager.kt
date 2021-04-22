@@ -20,8 +20,8 @@ class TabManager(private val plugin: StrikeTab) : Listener {
 
     private val layouts = EnumMap<TabLayoutType, TabLayout>(TabLayoutType::class.java)
 
-    private val ranksManager = RanksManager(plugin)
     internal val updater: TabUpdater = TabbedTabUpdater()
+    private val ranksManager = RanksManager(plugin)
     private val placeholders = Placeholders()
     private val columns = plugin.config.getInt("tablist.columns")
     private val columnSize = when (columns) {
@@ -72,8 +72,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
                     }
                     if (temp.size > columnSize) {
                         temp.subList(0, columnSize)
-                        Bukkit.getLogger()
-                            .warning("Tablist at $path has too many slots! ${temp.size} > $columnSize")
+                        Bukkit.getLogger().warning("Tablist at $path has too many slots! ${temp.size} > $columnSize")
                     }
                     slots += temp
                 }

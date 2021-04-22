@@ -4,7 +4,7 @@ name: StrikeTab
 author: Toppe5
 description: Tablist addon for StrikePractice
 depend: [PlaceholderAPI, ProtocolLib]
-softdepend: [StrikePractice, Citizens, ViaVersion, ViaRewind]
+softdepend: [StrikePractice, Citizens, ViaVersion, ViaRewind, Tabbed]
 commands:
   striketab:
     aliases: [spractab]

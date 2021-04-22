@@ -10,6 +10,10 @@ interface TabUpdater {
         /* optional */
     }
 
+    fun onDisable(plugin: StrikeTab) {
+        /* optional */
+    }
+
     fun updateTab(player: Player, layout: TabLayout, bypassTimeLimit: Boolean = false)
 
     /** Also called on current online players when the plugin enables. */

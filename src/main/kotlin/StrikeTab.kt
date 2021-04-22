@@ -33,6 +33,10 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         updateChecker = UpdateChecker(this)
     }
 
+    override fun onDisable() {
+        tabManager.updater.onDisable(this)
+    }
+
     private fun initializePlugin() {
         // When reloading the config
         Bukkit.getScheduler().cancelTasks(this)

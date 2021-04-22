@@ -14,6 +14,7 @@ import com.keenant.tabbed.util.Skin
 import com.keenant.tabbed.util.Skins
 import ga.strikepractice.striketab.DEBUG
 import ga.strikepractice.striketab.StrikeTab
+import ga.strikepractice.striketab.cache.SkinCache
 import ga.strikepractice.striketab.debug
 import ga.strikepractice.striketab.layout.TabLayout
 import ga.strikepractice.striketab.util.getCitizensPlayer
@@ -24,6 +25,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.scoreboard.Team
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -33,8 +35,9 @@ class TabbedTabUpdater : TabUpdater, Listener {
 
     private var spreadCounter = 0L
 
-    private lateinit var tabbed: Tabbed
     private lateinit var plugin: StrikeTab
+    private lateinit var tabbed: Tabbed
+    private lateinit var skinCache: SkinCache
     private val tabs = ConcurrentHashMap<UUID, TabData>()
 
     private val legacyNameProvider = object : SimpleTabList.NameProvider {
@@ -64,6 +67,12 @@ class TabbedTabUpdater : TabUpdater, Listener {
     override fun onEnable(plugin: StrikeTab) {
         this.plugin = plugin
         tabbed = Tabbed(plugin)
+        skinCache = SkinCache(plugin)
+        CompletableFuture.runAsync { skinCache.load() }
+    }
+
+    override fun onDisable(plugin: StrikeTab) {
+        if (skinCache.getFile().exists()) skinCache.save()
     }
 
     override fun updateTab(player: Player, layout: TabLayout, bypassTimeLimit: Boolean) {
@@ -109,11 +118,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 }
                 // 1.7 tab starts ordering top row first, 1.8+ does 1. column first
                 // converts 1.8 -> 1.7 slots
-                var legacyIndex = 3 * ((index % 20) + 1) - ((59 - index) / 20 + 1)
-                // FIXME: doesn't work correctly
-                // for some weird reason index=24 does not show at all?
-                // if we don't do this "skip" it the tab will be one slot offset
-                if (legacyIndex > 24) legacyIndex++
+                val legacyIndex = 3 * ((index % 20) + 1) - ((59 - index) / 20 + 1)
                 val teamName = "striketab-$legacyIndex"
                 val team = board.getTeam(teamName) ?: (board.registerNewTeam(teamName).also {
                     it.addEntry(legacyNameProvider.getName(legacyIndex))
