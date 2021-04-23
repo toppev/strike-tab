@@ -31,8 +31,8 @@ class SkinCache(plugin: StrikeTab) : FileCache(plugin, "skins.json") {
             return
         }
         val st = System.currentTimeMillis()
-        val data = Skins.getProfileCache()
-        debug { "Saving ${data.asMap().size} skins to cache file at ${file.absolutePath}" }
+        val data = Skins.getProfileCache().asMap()
+        debug { "Saving ${data.size} skins to cache file at ${file.absolutePath}" }
         Gson().toJson(data, file.bufferedWriter())
         debug { "Done saving skins in the cache file in ${System.currentTimeMillis() - st} ms." }
     }
