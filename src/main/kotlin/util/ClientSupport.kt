@@ -9,7 +9,7 @@ import us.myles.ViaVersion.api.Via
 
 var LEGACY_SUPPORT = true
 
-private val viaVersionSupport: Boolean by lazy {
+val VIA_REWIND_SUPPORT: Boolean by lazy {
     (Bukkit.getPluginManager().getPlugin("ViaRewind")?.isEnabled ?: false).also {
         if (it) Bukkit.getLogger().info("${PREFIX}ViaRewind support detected")
     }
@@ -24,9 +24,8 @@ fun isLegacyClient(player: Player): Boolean {
     return viaVer == 5 || ver < 47
 }
 
-
 private fun getViaVersionVersion(player: Player): Int? {
-    if (!viaVersionSupport) return null
+    if (!VIA_REWIND_SUPPORT) return null
     return try {
         Via.getAPI().getPlayerVersion(player)
     } catch (e: Exception) {

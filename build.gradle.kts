@@ -49,7 +49,7 @@ tasks {
     }
     named<ShadowJar>("shadowJar") {
         archiveBaseName.set("StrikeTab")
-        relocate("org.bstats", "ga.strikepractice.bstats")
+        relocate("org.bstats", "ga.strikepractice.striketab.bstats")
         mergeServiceFiles()
     }
 }
