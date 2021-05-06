@@ -41,6 +41,17 @@ class CustomCharts {
                         "1.8+" to Bukkit.getOfflinePlayers().size - legacyCount
                     )
                 },
+                SimplePie("players_rounded") {
+                    val count = Bukkit.getOnlinePlayers().size
+                    when {
+                        count < 5 -> "0-5"
+                        count < 10 -> "5-10"
+                        else -> {
+                            val below = (count / 10) * 10
+                            "$below-${below + 10}"
+                        }
+                    }
+                },
             )
         }
 
