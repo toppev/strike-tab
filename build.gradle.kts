@@ -31,8 +31,9 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.10.4")
     compileOnly("net.citizensnpcs:citizens:2.0.13-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
-    implementation("com.github.toppev:tabbed:-SNAPSHOT")
     compileOnly("us.myles:viaversion:viaversion")
+    implementation("com.github.toppev:tabbed:master-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:2.2.1")
 }
 
 configurations.all {
@@ -51,6 +52,7 @@ tasks {
     }
     named<ShadowJar>("shadowJar") {
         archiveBaseName.set("StrikeTab")
+        relocate("org.bstats", "ga.strikepractice.striketab.bstats")
         mergeServiceFiles()
     }
 }

@@ -1,9 +1,11 @@
 package ga.strikepractice.striketab
 
+import ga.strikepractice.striketab.bstats.CustomCharts
 import com.keenant.tabbed.util.Reflection
 import ga.strikepractice.striketab.updater.TabUpdateTask
 import ga.strikepractice.striketab.util.LEGACY_SUPPORT
 import ga.strikepractice.striketab.util.UpdateChecker
+import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -31,6 +33,13 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
         getCommand("striketab").executor = this
         initializePlugin()
         updateChecker = UpdateChecker(this)
+        try {
+            val metrics = Metrics(this, 11120)
+            CustomCharts.getCustomCharts(this).forEach { metrics.addCustomChart(it) }
+        } catch (e: Exception) {
+            Bukkit.getLogger().warning("Failed to start bStats metrics...")
+            e.printStackTrace()
+        }
     }
 
     override fun onDisable() {
