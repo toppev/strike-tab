@@ -4,7 +4,7 @@ import ga.strikepractice.striketab.StrikeTab
 import java.io.File
 
 abstract class FileCache(
-    private val plugin: StrikeTab,
+    protected val plugin: StrikeTab,
     private val fileName: String
 ) {
 

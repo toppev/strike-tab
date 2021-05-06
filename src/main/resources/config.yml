@@ -21,7 +21,8 @@ sort-ranks:
   donator:
     permission: 'striketab.donator'
     prefix: '&e'
-
+cache:
+  cache-offline-skins: true
 slots:
   # You can use "ping=<number>" e.g "ping=10" to set the ping
   # Use "skin=<skin>" e.g "skin=Toppe5" to set the skin

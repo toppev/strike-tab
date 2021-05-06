@@ -1,6 +1,7 @@
 package ga.strikepractice.striketab.cache
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.keenant.tabbed.util.Skins
 import ga.strikepractice.striketab.StrikeTab
@@ -17,14 +18,14 @@ class SkinCache(plugin: StrikeTab) : FileCache(plugin, "skins.json") {
     private var loading = true
 
     override fun load(file: File) {
-        if (!file.exists()) return
+        if (!file.exists() || !plugin.config.getBoolean("cache.cache-offline-skins")) return
         val st = System.currentTimeMillis()
         debug { "Loading skins from the cache file at ${file.absolutePath}" }
         val map: Map<String, String>? = Gson().fromJson(file.bufferedReader(), MAP_TYPE)
         if (map != null) {
             Skins.getProfileCache().putAll(map)
         }
-        debug { "Done loading skins from the cache file in ${System.currentTimeMillis() - st} ms." }
+        Bukkit.getLogger().info("Done loading (${map?.size ?: 0}) skins from the cache file in ${System.currentTimeMillis() - st} ms.")
         loading = false
     }
 
@@ -36,7 +37,9 @@ class SkinCache(plugin: StrikeTab) : FileCache(plugin, "skins.json") {
         val st = System.currentTimeMillis()
         val data = Skins.getProfileCache().asMap()
         debug { "Saving ${data.size} skins to cache file at ${file.absolutePath}" }
-        Gson().toJson(data, file.bufferedWriter())
+        file.bufferedWriter().use {
+            GsonBuilder().setPrettyPrinting().create().toJson(data, it)
+        }
         debug { "Done saving skins in the cache file in ${System.currentTimeMillis() - st} ms." }
     }
 
