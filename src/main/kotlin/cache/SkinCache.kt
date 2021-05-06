@@ -17,10 +17,13 @@ class SkinCache(plugin: StrikeTab) : FileCache(plugin, "skins.json") {
     private var loading = true
 
     override fun load(file: File) {
+        if (!file.exists()) return
         val st = System.currentTimeMillis()
         debug { "Loading skins from the cache file at ${file.absolutePath}" }
-        val map: Map<String, String> = Gson().fromJson(file.bufferedReader(), MAP_TYPE)
-        Skins.getProfileCache().putAll(map)
+        val map: Map<String, String>? = Gson().fromJson(file.bufferedReader(), MAP_TYPE)
+        if (map != null) {
+            Skins.getProfileCache().putAll(map)
+        }
         debug { "Done loading skins from the cache file in ${System.currentTimeMillis() - st} ms." }
         loading = false
     }

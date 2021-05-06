@@ -25,7 +25,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.scoreboard.Team
 import java.util.*
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -68,7 +67,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
         this.plugin = plugin
         tabbed = Tabbed(plugin)
         skinCache = SkinCache(plugin)
-        CompletableFuture.runAsync { skinCache.load() }
+        skinCache.load()
     }
 
     override fun onDisable(plugin: StrikeTab) {
