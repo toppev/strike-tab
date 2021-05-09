@@ -20,7 +20,6 @@ fun isSupportedClient(player: Player) = LEGACY_SUPPORT || !isLegacyClient(player
 fun isLegacyClient(player: Player): Boolean {
     val viaVer = getViaVersionVersion(player)
     val ver = ProtocolLibrary.getProtocolManager().getProtocolVersion(player)
-    debug { "player ${player.name} ProtocolLib version: $ver, ViaVersion version: $viaVer" }
     return viaVer == 5 || ver < 47
 }
 
