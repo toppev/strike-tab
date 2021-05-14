@@ -48,7 +48,7 @@ class CustomCharts {
                         count < 10 -> "5-10"
                         else -> {
                             val below = (count / 10) * 10
-                            "$below-${below + 10}"
+                            "$below-${below + 10.0}"
                         }
                     }
                 },
