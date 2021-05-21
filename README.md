@@ -33,8 +33,3 @@ A: If the line is completely empty ('', no spaces) the line will be replaced wit
 **Q: Does this work on X version?**  
 A: Tested on 1.8.8 (1.8.R3) server with 1.8 and 1.16 clients (ViaVersion) and on 1.16.4 server with 1.16 client. It should work in with 
 all 1.8.8-1.16.4 versions. There is experimental support for legacy clients (1.7.10) .
-
-## Rules/EULA
-- You may **not sell or redistribute** this product or any fork of it.
-- You may modify the source code.
- Message me if your developer wants access to the source code.
