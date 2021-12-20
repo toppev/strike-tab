@@ -45,6 +45,7 @@ class UpdateChecker(private val plugin: StrikeTab) : Listener {
         val latestVer = json["version"] ?: throw Exception("No 'version' in response: $content")
         val currentVer = plugin.description.version
         if (latestVer > currentVer) {
+            joinMessages.clear()
             joinMessages.apply {
                 add("There's a new update available: https://github.com/toppev/strike-tab/releases")
                 add("You're on $currentVer and the latest version is $latestVer.")
