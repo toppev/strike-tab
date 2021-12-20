@@ -1,9 +1,10 @@
 {
   "README": "This file is used to check for updates and the changelog",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "message": "New in v0.3.3: Built-in skins (see /striketab skins) and minor tweaks/fixes",
   "message-v0.3.4": "Fixed a memory leak in 1.7 tabs",
   "message-v0.3.5": "Minor fixes & tweaks. Added bStats and skin cache for offline players.",
   "message-v0.3.6": "Minor fixes.",
-  "message-v0.3.7": "1.7 servers should work now. Other minor fixes."
+  "message-v0.3.7": "1.7 servers should work now. Other minor fixes.",
+  "message-v0.3.8": "Fix error getting player ping on 1.17+ (#8)"
 }

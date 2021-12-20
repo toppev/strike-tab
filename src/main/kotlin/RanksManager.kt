@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.Comparator
 
 class RanksManager(private val plugin: StrikeTab) : Listener {
 
@@ -22,10 +21,9 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
 
     init {
         val config = plugin.config
-        rankList = config.getConfigurationSection("sort-ranks").getKeys(false).map {
-            config.getString("sort-ranks.$it.permission") to config.getString("sort-ranks.$it.prefix")
-                    ?.translateColors()
-        }.toMap()
+        rankList = config.getConfigurationSection("sort-ranks").getKeys(false).associate {
+            config.getString("sort-ranks.$it.permission") to config.getString("sort-ranks.$it.prefix")?.translateColors()
+        }
         Bukkit.getLogger().info("Loaded tab ranks (in order): $rankList")
         // Greater if has more players (we reverse order the players)
 
@@ -45,11 +43,10 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
     fun onJoin(event: PlayerJoinEvent) {
         refreshOrderedPlayerList()
         rankList.entries.forEach { (perm, prefix) ->
-            if (event.player.hasPermission(perm)) {
-                event.player.playerListName = prefix + event.player.name
-                debug {
-                    "Set ${event.player.name}'s tab name to $prefix${event.player.name} because they had $perm permission"
-                }
+            val p = event.player
+            if (p.hasPermission(perm)) {
+                p.playerListName = prefix + p.name
+                debug { "Set ${p.name}'s tab name to $prefix${p.name} because they had $perm permission" }
                 return
             }
         }

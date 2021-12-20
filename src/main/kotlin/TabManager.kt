@@ -6,6 +6,7 @@ import ga.strikepractice.striketab.layout.getLayout
 import ga.strikepractice.striketab.updater.TabUpdater
 import ga.strikepractice.striketab.updater.TabbedTabUpdater
 import ga.strikepractice.striketab.util.Placeholders
+import ga.strikepractice.striketab.util.getPlayerPing
 import ga.strikepractice.striketab.util.isSupportedClient
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -111,7 +112,7 @@ class TabManager(private val plugin: StrikeTab) : Listener {
                     return@map slot.copy(
                         text = realPlayer.playerListName,
                         skin = realPlayer.name,
-                        ping = getPing(player),
+                        ping = getPlayerPing(player),
                     )
                 }
             }
