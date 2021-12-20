@@ -46,8 +46,8 @@ class UpdateChecker(private val plugin: StrikeTab) : Listener {
         val currentVer = plugin.description.version
         if (latestVer > currentVer) {
             joinMessages.apply {
-                add("${PREFIX}There's a new update available: https://github.com/toppev/strike-tab/releases")
-                add("${PREFIX}You're on $currentVer and the latest version is $latestVer.")
+                add("There's a new update available: https://github.com/toppev/strike-tab/releases")
+                add("You're on $currentVer and the latest version is $latestVer.")
                 // Filter updates since current version
                 json.filter { it.key.startsWith("message-v") && it.key > "message-v$currentVer" }
                     .toSortedMap()
