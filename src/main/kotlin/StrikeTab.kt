@@ -1,7 +1,6 @@
 package ga.strikepractice.striketab
 
 import ga.strikepractice.striketab.bstats.CustomCharts
-import com.keenant.tabbed.util.Reflection
 import ga.strikepractice.striketab.updater.TabUpdateTask
 import ga.strikepractice.striketab.util.LEGACY_SUPPORT
 import ga.strikepractice.striketab.util.UpdateChecker
@@ -11,10 +10,8 @@ import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
-import java.lang.reflect.Field
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -145,18 +142,4 @@ inline fun debug(message: () -> String) {
     if (DEBUG) {
         Bukkit.getLogger().info(DEBUG_PREFIX + message.invoke())
     }
-}
-
-private lateinit var pingField: Field
-fun getPing(player: Player): Int {
-    try {
-        val craftPlayer = Reflection.getHandle(player)
-        if (!::pingField.isInitialized) {
-            pingField = craftPlayer.javaClass.getDeclaredField("ping")
-        }
-        return pingField.getInt(craftPlayer)
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-    return 0
 }
