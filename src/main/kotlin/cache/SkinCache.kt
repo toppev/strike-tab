@@ -20,13 +20,20 @@ class SkinCache(plugin: StrikeTab) : FileCache(plugin, "skins.json") {
     override fun load(file: File) {
         if (!file.exists() || !plugin.config.getBoolean("cache.cache-offline-skins")) return
         val st = System.currentTimeMillis()
-        debug { "Loading skins from the cache file at ${file.absolutePath}" }
-        val map: Map<String, String>? = Gson().fromJson(file.bufferedReader(), MAP_TYPE)
-        if (map != null) {
-            Skins.getProfileCache().putAll(map)
+        try {
+            debug { "Loading skins from the cache file at ${file.absolutePath}" }
+            val map: Map<String, String>? = Gson().fromJson(file.bufferedReader(), MAP_TYPE)
+            if (map != null) {
+                Skins.getProfileCache().putAll(map)
+            }
+            Bukkit.getLogger().info("Done loading (${map?.size ?: 0}) skins from the cache file in ${System.currentTimeMillis() - st} ms.")
+        } catch (e: Exception) {
+            Bukkit.getLogger().warning("Failed to load skin cache. Deleting the file to invalidate cache automatically.")
+            e.printStackTrace()
+            if (file.exists()) file.delete()
+        } finally {
+            loading = false
         }
-        Bukkit.getLogger().info("Done loading (${map?.size ?: 0}) skins from the cache file in ${System.currentTimeMillis() - st} ms.")
-        loading = false
     }
 
     override fun save(file: File) {
