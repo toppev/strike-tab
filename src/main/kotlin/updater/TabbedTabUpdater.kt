@@ -1,7 +1,7 @@
 package ga.strikepractice.striketab.updater
 
-import com.comphenix.protocol.wrappers.EnumWrappers
 import com.comphenix.protocol.wrappers.EnumWrappers.NativeGameMode
+import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction
 import com.comphenix.protocol.wrappers.PlayerInfoData
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedGameProfile
@@ -85,7 +85,8 @@ class TabbedTabUpdater : TabUpdater, Listener {
             if (!legacy || !tabData.legacyInit) {
                 val tab = tabData.tablist
                 layout.slots.forEachIndexed { index, slot ->
-                    tab.set(index, TextTabItem(slot.text, slot.ping, getSkin(slot.skin)))
+                    val skin = if (legacy) DEFAULT_SKIN else getSkin(slot.skin)
+                    tab.set(index, TextTabItem(slot.text, slot.ping, skin))
                 }
                 if (layout.footer != null && tab.footer != layout.footer) tab.footer = layout.footer
                 if (layout.header != null && tab.header != layout.header) tab.header = layout.header
@@ -188,7 +189,7 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 WrappedChatComponent.fromText(it.name)
             )
         }
-        Packets.send(player, listOf(Packets.getPacket(EnumWrappers.PlayerInfoAction.REMOVE_PLAYER, names)))
+        Packets.send(player, listOf(Packets.getPacket(PlayerInfoAction.REMOVE_PLAYER, names)))
     }
 
     override fun onLeave(player: Player) {
@@ -210,8 +211,6 @@ class TabbedTabUpdater : TabUpdater, Listener {
         var previousLayout: TabLayout? = null,
         var lastUpdated: Long = 0,
         var legacyInit: Boolean = false
-    ) {
-    }
-
+    )
 
 }
