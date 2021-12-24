@@ -38,7 +38,7 @@ class CustomCharts {
                     val legacyCount = Bukkit.getOnlinePlayers().count { isLegacyClient(it) }
                     mapOf(
                         "1.7.10" to legacyCount,
-                        "1.8+" to Bukkit.getOfflinePlayers().size - legacyCount
+                        "1.8+" to Bukkit.getOnlinePlayers().size - legacyCount
                     )
                 },
                 SimplePie("players_rounded_v2") {
