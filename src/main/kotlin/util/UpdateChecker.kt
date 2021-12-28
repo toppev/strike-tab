@@ -7,6 +7,7 @@ import ga.strikepractice.striketab.PREFIX
 import ga.strikepractice.striketab.StrikeTab
 import ga.strikepractice.striketab.translateColors
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -56,7 +57,7 @@ class UpdateChecker(private val plugin: StrikeTab) : Listener {
                         val ver = it.key.substringAfter("message-")
                         add("$PREFIX$ver: ${it.value.translateColors()}")
                     }
-                forEach { Bukkit.getLogger().info(PREFIX + it.translateColors()) }
+                forEach { Bukkit.getLogger().info(ChatColor.stripColor(it)) }
             }
         }
         lastChecked = System.currentTimeMillis()
