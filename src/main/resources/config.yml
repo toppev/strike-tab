@@ -9,7 +9,7 @@ tablist:
 header:
   - '&b&lStrikeTab &7&l- &3&lTablist Addon'
 footer:
-  - '&7Contact Toppe#4670 for StrikeTab'
+  - '&7github.com/toppev/strike-tab'
 # Used to sort players in tab
 sort-ranks:
   admin:
