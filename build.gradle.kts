@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ga.strikepractice.striketab"
-version = "0.3.9-SNAPSHOT"
+version = "0.3.10-SNAPSHOT"
 
 repositories {
     jcenter()
@@ -17,7 +17,7 @@ repositories {
     maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
     maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
-    maven { url = uri("https://repo.citizensnpcs.co/") }
+    maven { url = uri("https://maven.citizensnpcs.co/repo") }
     flatDir { dirs("libs") }
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://repo.dmulloy2.net/nexus/repository/public/") }
@@ -27,9 +27,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     testImplementation(kotlin("test-junit"))
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
-    compileOnly("ga.strikepractice:strikepractice-api-1.1.0")
+    compileOnly("ga.strikepractice:strikepractice-api")
     compileOnly("me.clip:placeholderapi:2.10.4")
-    compileOnly("net.citizensnpcs:citizens:2.0.13-SNAPSHOT")
+    compileOnly("net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
     compileOnly("us.myles:viaversion:viaversion")
     implementation("com.github.toppev:tabbed:master-SNAPSHOT")
@@ -37,7 +37,7 @@ dependencies {
 }
 
 configurations.all {
-    // Don't try to update the tabbed fork from github with jitpack every time (to reduce compilation time in subsequent builds)
+    // Don't try to update the tabbed fork from GitHub with jitpack every time (to reduce compilation time in subsequent builds)
     resolutionStrategy.cacheChangingModulesFor(10, "minutes")
 }
 
@@ -66,7 +66,7 @@ tasks {
     }
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
