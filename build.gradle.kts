@@ -28,10 +28,12 @@ dependencies {
     testImplementation(kotlin("test-junit"))
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnly("ga.strikepractice:strikepractice-api")
-    compileOnly("me.clip:placeholderapi:2.10.4")
+    compileOnly("me.clip:placeholderapi:2.11.3")
     compileOnly("net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("us.myles:viaversion:viaversion")
+    // If tabbed is updated, might need to trigger a new build on jitpack:
+    // https://jitpack.io/#toppev/tabbed/master-SNAPSHOT
     implementation("com.github.toppev:tabbed:master-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:2.2.1")
 }
