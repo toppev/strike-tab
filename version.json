@@ -1,11 +1,12 @@
 {
   "README": "This file is used to check for updates and the changelog",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "message-v0.3.4": "Fixed a memory leak in 1.7 tabs",
   "message-v0.3.5": "Minor fixes & tweaks. Added bStats and skin cache for offline players.",
   "message-v0.3.6": "Minor fixes.",
   "message-v0.3.7": "1.7 servers should work now. Other minor fixes.",
   "message-v0.3.8": "Fix error getting player ping on 1.17+ (#8)",
   "message-v0.3.9": "Fix weird 1.7 tab and other minor fixes.",
-  "message-v0.3.10": "Some kind of 1.19+ and ProtocolLib 5.x support."
+  "message-v0.3.10": "Some kind of 1.19+ and ProtocolLib 5.x support.",
+  "message-v0.3.11": "Fix issues with < 1.19 servers (since 0.3.10)"
 }
