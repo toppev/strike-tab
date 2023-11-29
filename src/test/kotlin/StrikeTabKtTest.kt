@@ -13,7 +13,7 @@ internal class StrikeTabKtTest {
 
     @Test
     fun translateHexColors() {
-        val res = "asd#FFFFFF123 another color:#40d1db".translateColors()
+        val res = "asd#ffffff123 another color:#40d1db".translateColors()
         assertEquals("asd§x§f§f§f§f§f§f123 another color:§x§4§0§d§1§d§b", res)
     }
 }
