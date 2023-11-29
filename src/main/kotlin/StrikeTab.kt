@@ -145,7 +145,7 @@ fun String.translateColors(): String {
         val ch = result.replace('#', 'x').toCharArray()
         val builder = StringBuilder()
         for (c in ch) {
-            builder.append("&").append(c)
+            builder.append("§").append(c)
         }
         translated = translated.replace(result, builder.toString())
     }
