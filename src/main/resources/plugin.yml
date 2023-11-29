@@ -1,7 +1,8 @@
 main: ga.strikepractice.striketab.StrikeTab
 version: 0.3.11
 name: StrikeTab
-author: Toppe5
+author: Toppe
+website: https://github.com/toppev/strike-tab
 description: Tablist addon for StrikePractice
 depend: [PlaceholderAPI, ProtocolLib]
 softdepend: [StrikePractice, Citizens, ViaVersion, ViaRewind, Tabbed]
