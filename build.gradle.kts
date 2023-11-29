@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ga.strikepractice.striketab"
-version = "0.3.11-SNAPSHOT"
+version = "0.3.12-SNAPSHOT"
 
 repositories {
     jcenter()
