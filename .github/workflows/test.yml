@@ -15,5 +15,11 @@ jobs:
           arguments: --scan --no-build-cache build
         env:
           CI: true
+      - name: Publish test report
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: test-report
+          path: build/reports/tests/test/index.html
       - name: Check no git diff
         run: git diff --exit-code

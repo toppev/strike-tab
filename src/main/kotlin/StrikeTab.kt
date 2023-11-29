@@ -136,7 +136,21 @@ class StrikeTab : JavaPlugin(), CommandExecutor {
 /**
  * Translate Bukkit ChatColors
  */
-fun String.translateColors(): String = ChatColor.translateAlternateColorCodes('&', this)
+val hexPattern = Regex("#[a-fA-F\\d]{6}")
+
+fun String.translateColors(): String {
+    var translated = this
+    hexPattern.findAll(this).forEach { matchResult ->
+        val result = matchResult.value
+        val ch = result.replace('#', 'x').toCharArray()
+        val builder = StringBuilder()
+        for (c in ch) {
+            builder.append("§").append(c)
+        }
+        translated = translated.replace(result, builder.toString())
+    }
+    return ChatColor.translateAlternateColorCodes('&', translated)
+}
 
 inline fun debug(message: () -> String) {
     if (DEBUG) {
