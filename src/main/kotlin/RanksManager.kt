@@ -23,7 +23,8 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
     init {
         val config = plugin.config
         rankList = config.getConfigurationSection("sort-ranks").getKeys(false).associate {
-            config.getString("sort-ranks.$it.permission") to config.getString("sort-ranks.$it.prefix")?.translateColors()
+            config.getString("sort-ranks.$it.permission") to config.getString("sort-ranks.$it.prefix")
+                ?.translateColors()
         }
         Bukkit.getLogger().info("Loaded tab ranks (in order): $rankList")
         // Greater if has more players (we reverse order the players)
@@ -46,11 +47,12 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
         rankList.entries.forEach { (perm, prefix) ->
             val p = event.player
             if (p.hasPermission(perm)) {
-                val format = plugin.config.getString("default-player-format")?: "%prefix%%name%"
+                val format = plugin.config.getString("default-player-format") ?: "%prefix%%name%"
                 val translated =
-                    PlaceholderAPI.setPlaceholders(p, format
-                        .replace("%name%", p.name)
-                        .replace("%prefix%", prefix?: "")
+                    PlaceholderAPI.setPlaceholders(
+                        p, format
+                            .replace("%name%", p.name)
+                            .replace("%prefix%", prefix ?: "")
                     )
                 p.playerListName = translated
                 debug { "Set ${p.name}'s tab name to $translated because they had $perm permission" }
