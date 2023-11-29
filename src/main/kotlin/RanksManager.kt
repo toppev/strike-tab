@@ -1,5 +1,6 @@
 package ga.strikepractice.striketab
 
+import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -45,8 +46,14 @@ class RanksManager(private val plugin: StrikeTab) : Listener {
         rankList.entries.forEach { (perm, prefix) ->
             val p = event.player
             if (p.hasPermission(perm)) {
-                p.playerListName = prefix + p.name
-                debug { "Set ${p.name}'s tab name to $prefix${p.name} because they had $perm permission" }
+                val format = plugin.config.getString("default-player-format")?: "%prefix%%name%"
+                val translated =
+                    PlaceholderAPI.setPlaceholders(p, format
+                        .replace("%name%", p.name)
+                        .replace("%prefix%", prefix?: "")
+                    )
+                p.playerListName = translated
+                debug { "Set ${p.name}'s tab name to $translated because they had $perm permission" }
                 return
             }
         }

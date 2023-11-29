@@ -1,5 +1,6 @@
 # Whether 1.7 clients are supported.
 legacy-support: true
+default-player-format: '%prefix%%name%'
 tablist:
   update-ticks: 100
   columns: 4
