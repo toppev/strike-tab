@@ -39,9 +39,14 @@ class TabbedTabUpdater : TabUpdater, Listener {
     private lateinit var skinCache: SkinCache
     private val tabs = ConcurrentHashMap<UUID, TabData>()
 
+    private val nameProvider = object : SimpleTabList.NameProvider {
+        override fun getName(index: Int) = String.format("............|%03d", index)
+    }
+
     private val legacyNameProvider = object : SimpleTabList.NameProvider {
         override fun getName(index: Int) = blankLines[index]
     }
+
     private val blankLines: List<String> by lazy {
         (1..4).flatMap { index ->
             ChatColor.values().map {
@@ -168,6 +173,8 @@ class TabbedTabUpdater : TabUpdater, Listener {
                 tab.isLegacyTab = true
                 tab.setNameProvider(legacyNameProvider)
                 clearOnlinePlayers(player)
+            } else {
+                tab.setNameProvider(nameProvider)
             }
             tab.enable()
             tabs[player.uniqueId] = TabData(tab)
