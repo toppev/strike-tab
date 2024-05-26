@@ -26,6 +26,20 @@ The file is almost 2 megabytes as the Kotlin Standard Library is included.
 ### Debugging
 You can toggle debugging with `/striketab debug`. The plugin will log more information when the debugging mode is enabled.
 
+### Making a release
+
+1. Search for the current version (e.g., "0.3.12") and replace it with the new version appropriately.
+2. Write a very short release note in `version.json`.
+3. Commit the changes and tag the commit with the new version:
+```bash
+git add .
+git commit -m "bump version to 0.3.13"
+git tag -a -m "some short message e.g., the one from version.json" v0.3.13
+git push
+git push --tags
+```
+4. Wait for the CI to build the release and upload the jar file to the release on GitHub.
+
 ## FAQ
 **Q: How can I display players in the tab?**  
 A: If the line is completely empty ('', no spaces) the line will be replaced with a player. See config for the rank priorities (players with higher rank are shown first).
