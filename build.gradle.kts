@@ -14,6 +14,7 @@ version = "0.3.12-SNAPSHOT"
 repositories {
     jcenter()
     mavenCentral()
+    maven { url = uri("https://maven.toppe.dev/repo") }
     maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
     maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
