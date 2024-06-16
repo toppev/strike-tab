@@ -14,6 +14,7 @@ version = "0.3.13-SNAPSHOT"
 repositories {
     jcenter()
     mavenCentral()
+    maven { url = uri("https://repo.viaversion.com") }
     maven { url = uri("https://maven.toppe.dev/repo") }
     maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
@@ -33,7 +34,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.3")
     compileOnly("net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
-    compileOnly("us.myles:viaversion:viaversion")
+    compileOnly("com.viaversion:viaversion-api:5.0.0")
     // If tabbed is updated, might need to trigger a new build on jitpack:
     // https://jitpack.io/#toppev/tabbed/master-SNAPSHOT
     implementation("com.github.toppev:tabbed:master-SNAPSHOT")
@@ -49,7 +50,7 @@ tasks {
     // Download the jar so we don't need any NMS dependencies (there's no API repository)
     register("download-viaversion") {
         val dest = "./libs/viaversion.jar"
-        val source = "https://repo.viaversion.com/everything/us/myles/viaversion/3.2.1/viaversion-3.2.1.jar"
+        val source = "https://repo.viaversion.com/everything/com/viaversion/viaversion/5.0.0/viaversion-5.0.0.jar"
         if (!File(dest).exists()) {
             download(source, dest)
         }
