@@ -5,7 +5,7 @@ import ga.strikepractice.striketab.PREFIX
 import ga.strikepractice.striketab.debug
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import us.myles.ViaVersion.api.Via
+import com.viaversion.viaversion.api.Via
 
 var LEGACY_SUPPORT = true
 

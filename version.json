@@ -1,6 +1,6 @@
 {
   "README": "This file is used to check for updates and the changelog",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "message-v0.3.4": "Fixed a memory leak in 1.7 tabs",
   "message-v0.3.5": "Minor fixes & tweaks. Added bStats and skin cache for offline players.",
   "message-v0.3.6": "Minor fixes.",
@@ -10,5 +10,6 @@
   "message-v0.3.10": "Some kind of 1.19+ and ProtocolLib 5.x support.",
   "message-v0.3.11": "Fix issues with < 1.19 servers (since 0.3.10)",
   "message-v0.3.12": "Hex color support",
-  "message-v0.3.13": "Better support for newer mc servers"
+  "message-v0.3.13": "Better support for newer mc servers",
+  "message-v0.3.14": "Fix new ViaVersion support"
 }
