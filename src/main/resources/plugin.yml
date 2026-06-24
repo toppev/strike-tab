@@ -1,5 +1,5 @@
 main: ga.strikepractice.striketab.StrikeTab
-version: 0.3.13
+version: 0.3.15
 name: StrikeTab
 author: Toppe
 api-version: 1.13
