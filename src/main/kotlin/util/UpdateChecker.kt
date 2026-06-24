@@ -18,6 +18,21 @@ import java.util.concurrent.TimeUnit.HOURS
 private const val UPDATE_URL = "https://toppe.dev/striketab/version.json"
 private val MAP_TYPE: Type = object : TypeToken<Map<String?, String?>>() {}.type
 
+/**
+ * Compares two dot-separated version strings numerically (e.g. 0.3.9 < 0.3.10).
+ * Non-numeric or missing parts are treated as 0.
+ */
+val VERSION_COMPARATOR = Comparator<String> { a, b ->
+    val aParts = a.split(".")
+    val bParts = b.split(".")
+    for (i in 0 until maxOf(aParts.size, bParts.size)) {
+        val cmp = (aParts.getOrNull(i)?.toIntOrNull() ?: 0)
+            .compareTo(bParts.getOrNull(i)?.toIntOrNull() ?: 0)
+        if (cmp != 0) return@Comparator cmp
+    }
+    0
+}
+
 class UpdateChecker(private val plugin: StrikeTab) : Listener {
 
     val joinMessages = mutableSetOf<String>()
@@ -45,14 +60,16 @@ class UpdateChecker(private val plugin: StrikeTab) : Listener {
         val json: Map<String, String> = Gson().fromJson(content, MAP_TYPE)
         val latestVer = json["version"] ?: throw Exception("No 'version' in response: $content")
         val currentVer = plugin.description.version
-        if (latestVer > currentVer) {
+        if (VERSION_COMPARATOR.compare(latestVer, currentVer) > 0) {
             joinMessages.clear()
             joinMessages.apply {
                 add("There's a new update available: https://github.com/toppev/strike-tab/releases")
                 add("You're on $currentVer and the latest version is $latestVer.")
-                // Filter updates since current version
-                json.filter { it.key.startsWith("message-v") && it.key > "message-v$currentVer" }
-                    .toSortedMap()
+                // Only show changelog entries for versions newer than the current one
+                json.filter { it.key.startsWith("message-v") }
+                    .filter { VERSION_COMPARATOR.compare(it.key.substringAfter("message-v"), currentVer) > 0 }
+                    .entries
+                    .sortedWith(compareBy(VERSION_COMPARATOR) { it.key.substringAfter("message-v") })
                     .forEach {
                         val ver = it.key.substringAfter("message-")
                         add("$PREFIX$ver: ${it.value.translateColors()}")
