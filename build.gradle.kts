@@ -12,6 +12,7 @@ group = "ga.strikepractice.striketab"
 version = "0.3.14-SNAPSHOT"
 
 repositories {
+    mavenLocal() // LOCAL TEST: resolve the locally-built tabbed fork (see dependencies)
     jcenter()
     mavenCentral()
     maven { url = uri("https://repo.viaversion.com") }
@@ -33,11 +34,13 @@ dependencies {
     compileOnly("ga.strikepractice:strikepractice-api")
     compileOnly("me.clip:placeholderapi:2.11.3")
     compileOnly("net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.4.0-SNAPSHOT")
     compileOnly("com.viaversion:viaversion-api:5.0.0")
     // If tabbed is updated, might need to trigger a new build on jitpack:
     // https://jitpack.io/#toppev/tabbed/master-SNAPSHOT
-    implementation("com.github.toppev:tabbed:master-SNAPSHOT")
+    // implementation("com.github.toppev:tabbed:master-SNAPSHOT")
+    // LOCAL TEST: use the locally-built fork (mvn install in ../tabbed) until jitpack rebuilds the pushed fork.
+    implementation("com.keenant.tabbed:tabbed-core:1.8-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:2.2.1")
 }
 
