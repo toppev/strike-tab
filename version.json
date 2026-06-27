@@ -1,6 +1,6 @@
 {
   "README": "This file is used to check for updates and the changelog",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "message-v0.3.4": "Fixed a memory leak in 1.7 tabs",
   "message-v0.3.5": "Minor fixes & tweaks. Added bStats and skin cache for offline players.",
   "message-v0.3.6": "Minor fixes.",
@@ -12,5 +12,6 @@
   "message-v0.3.12": "Hex color support",
   "message-v0.3.13": "Better support for newer mc servers",
   "message-v0.3.14": "Fix new ViaVersion support",
-  "message-v0.3.15": "Support for Minecraft 26.x (calendar versions). Minor fixes."
+  "message-v0.3.15": "Support for Minecraft 26.x (calendar versions). Minor fixes.",
+  "message-v0.3.16": "Actually ship the Minecraft 26.x calendar-version fix (0.3.15 bundled an outdated Tabbed)."
 }

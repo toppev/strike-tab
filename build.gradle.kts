@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ga.strikepractice.striketab"
-version = "0.3.15-SNAPSHOT"
+version = "0.3.16-SNAPSHOT"
 
 repositories {
     jcenter()
@@ -35,9 +35,11 @@ dependencies {
     compileOnly("net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("com.viaversion:viaversion-api:5.0.0")
-    // If tabbed is updated, might need to trigger a new build on jitpack:
-    // https://jitpack.io/#toppev/tabbed/master-SNAPSHOT
-    implementation("com.github.toppev:tabbed:master-SNAPSHOT")
+    // Pinned to an exact tabbed commit so the build is deterministic and always
+    // picks up the intended fix (master-SNAPSHOT can serve a stale JitPack build).
+    // To update: push tabbed, confirm its JitPack build succeeds, then bump this hash.
+    // https://jitpack.io/#toppev/tabbed
+    implementation("com.github.toppev:tabbed:878152cc52")
     implementation("org.bstats:bstats-bukkit:2.2.1")
 }
 
